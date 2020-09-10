@@ -1,34 +1,28 @@
 # Default libs
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.io as pio
+from intents.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
+from sklearn.manifold import TSNE
+import nltk
 import pandas as pd
 import numpy as np
 
-SEED = 399
-np.random.seed(399)
+SEED = 1993
+np.random.seed(SEED)
 
 # ML libs
-import nltk
-from sklearn.pipeline import Pipeline
-from sklearn.manifold import TSNE
-from sklearn.decomposition import TruncatedSVD
-from sklearn.decomposition import PCA
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from intents.nlp_utils.text_preprocessing import normalize_text, load_stopwords
 
 # Graph libs
-import plotly.io as pio
-import plotly.express as px
 
 # set default theme
 pio.templates.default = "seaborn"
 
 
 def decomposition_reduction(examples, intents, method="pca"):
-    pipeline = Pipeline([
-        ('vect', CountVectorizer()),
-        ('tfidf', TfidfTransformer()),
-    ])
-
-    X = pipeline.fit_transform(examples).todense()
+    X = apply_tfidf(examples)
 
     if method.lower() == "tsne":
         model = TSNE(n_components=2, random_state=SEED)
@@ -43,8 +37,6 @@ def decomposition_reduction(examples, intents, method="pca"):
 
     df["example"] = examples
     df["intent"] = intents
-
-    df.sort_values(by=["intent"], inplace=True)
     return df
 
 
@@ -61,8 +53,6 @@ def prepareDataIntents(df):
                     "examples_count": examples_count})
 
     df = pd.DataFrame(lst)
-    df.sort_values(by=["intent"], inplace=True)
-
     return df
 
 
@@ -85,7 +75,7 @@ class ExamplesDA():
         self.examples_processed = [normalize_text(
             example, stopwords) for example in self.examples]
 
-    def fit(self):
+    def prepare_data(self):
         if isinstance(self.examples_processed, list):
             self.data = decomposition_reduction(
                 self.examples_processed, self.intents, method=self.decomposition_method)
@@ -98,13 +88,49 @@ class ExamplesDA():
                                     for example in self.data["example"]]
         return self.data
 
-    def generate_fig(self):
-        if self.data == None:
-            self.fit()
+    def generate_fig(self, title="Example - Decomposition Analysis"):
+        if not isinstance(self.data, pd.DataFrame):
+            self.prepare_data()
 
-        self.fig = px.scatter(self.data, x="x", y="y",
-                              size="example_len", color="intent",
-                              hover_name="example", size_max=10, title="Examples Analysis")
+        data = self.data.copy()
+
+        intents = data["intent"].unique().tolist()
+        intents = sorted(intents)
+
+        hover_texts = []
+        for i in range(len(self.data)):
+            hover_text = "<b>Example:</b> {}<br><b>Example words:</b> {}<br><b>Intent:</b> {}".format(data["example"][i],
+                                                                                                      data["example_len"][i],
+                                                                                                      data["intent"][i])
+            hover_texts.append(hover_text)
+
+        data["hovertext"] = hover_texts
+
+        layout = go.Layout(
+            title=title,
+            xaxis=go.layout.XAxis(
+                # title='Time',
+                showticklabels=False),
+            yaxis=go.layout.YAxis(
+                # title='Age',
+                showticklabels=False)
+        )
+
+        fig = go.Figure(layout=layout)
+        for intent in intents:
+            temp = data[data["intent"] == intent].copy()
+
+            fig.add_trace(go.Scatter(
+                x=temp["x"], y=temp["y"],
+                mode="markers",
+                text=temp["example"],
+                opacity=0.6,
+                name=intent,
+                hovertext=temp["hovertext"],
+                hoverinfo="text"
+            ))
+
+        self.fig = fig
 
     def display(self):
         if self.fig == None:
@@ -120,10 +146,9 @@ class ExamplesDA():
 
 
 class IntentsDA():
-    def __init__(self, examples, intents, intents_prefix=None, decomposition_method="pca"):
+    def __init__(self, examples, intents, decomposition_method="pca"):
         self.examples = examples
         self.intents = intents
-        self.intents_prefix = intents_prefix
         self.decomposition_method = decomposition_method
         self.examples_processed = None
         self.data = None
@@ -139,7 +164,7 @@ class IntentsDA():
         self.examples_processed = [normalize_text(
             example, stopwords) for example in self.examples]
 
-    def fit(self):
+    def prepare_data(self):
         if isinstance(self.examples_processed, list):
             examples = self.examples_processed
         else:
@@ -150,25 +175,50 @@ class IntentsDA():
         self.data = prepareDataIntents(data)
         return self.data
 
-    def generate_fig(self, title="Intents Analysis"):
-        if self.data == None:
-            self.fit()
+    def generate_fig(self, title="Intents - Decomposition Analysis"):
+        if not isinstance(self.data, pd.DataFrame):
+            self.prepare_data()
 
-        if self.intents_prefix != None:
-            self.data["intent_prefix"] = self.intents_prefix
-            plotly_color = "intent_prefix"
-        else:
-            plotly_color = "intent"
+        data = self.data.copy()
+        data.sort_values(by="intent", inplace=True)
 
-        self.fig = px.scatter(self.data, x="x", y="y", hover_name="intent",
-                              size="examples_count", color=plotly_color,
-                              size_max=10, title=title)
+        layout = go.Layout(
+            title=title,
+            xaxis=go.layout.XAxis(
+                # title='Time',
+                showticklabels=False),
+            yaxis=go.layout.YAxis(
+                # title='Age',
+                showticklabels=False)
+        )
+        fig = go.Figure(layout=layout)
+
+        for row in data.to_dict(orient="records"):
+            hover_text = "<b>Intent:</b> {}<br><b>Examples count:</b> {}".format(
+                row["intent"], row["examples_count"])
+
+            fig.add_trace(go.Scatter(
+                x=[row["x"]], y=[row["y"]],
+                mode="markers",
+                marker_size=[row["examples_count"]],
+                text=[row["intent"]],
+                opacity=0.6,
+                name=row["intent"],
+                hovertext=hover_text,
+                hoverinfo="text"
+            ))
+
+        self.fig = fig
+        if False:
+            self.fig = px.scatter(data, x="x", y="y", hover_name="intent", hover_data=["examples_count"],
+                                  size="examples_count", color="intent", opacity=0.6,
+                                  size_max=10, title=title)
 
     def display(self):
         if self.fig == None:
             self.generate_fig()
 
-        self.fig.show()
+        return self.fig.show()
 
     def export_html(self, file_name="intents_analysis.html"):
         if self.fig == None:
