@@ -16,4 +16,5 @@ setup(name='mirage-chatbot-analytics',
       long_description=open('README.md').read(),
       tests_require=['pytest'],
       zip_safe=False,
-      install_requires=[requirements])
+      install_requires=[requirements],
+      python_requires='>=3.6')
