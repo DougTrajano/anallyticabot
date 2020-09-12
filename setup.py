@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
  
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 with open('requirements.txt') as requirements_file:
     requirements = requirements_file.readlines()
@@ -13,8 +13,9 @@ PROJECT_URLS = {
 
 CLASSIFIERS = [
     "Development Status :: 2 - Pre-Alpha",
-    "Environment :: Console",
     "Operating System :: OS Independent",
+    "Intended Audience :: Customer Service",
+    "Intended Audience :: Developers"
     "Intended Audience :: Science/Research",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -22,6 +23,8 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Cython",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Information Analysis"
 ]
 
 setup(name='mirage-chatbot-analytics',
