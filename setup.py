@@ -6,9 +6,9 @@ with open('requirements.txt') as requirements_file:
     requirements = requirements_file.readlines()
     
 PROJECT_URLS = {
-    "Bug Tracker": "https://github.com/DougTrajano/mirage-chatbot-analytics/issues",
-    "Documentation": "https://github.com/DougTrajano/mirage-chatbot-analytics/tree/master/documentation",
-    "Source Code": "https://github.com/DougTrajano/mirage-chatbot-analytics",
+    "Bug Tracker": "https://github.com/DougTrajano/anallyticabot/issues",
+    "Documentation": "https://github.com/DougTrajano/anallyticabot/tree/master/documentation",
+    "Source Code": "https://github.com/DougTrajano/anallyticabot",
 }
 
 CLASSIFIERS = [
@@ -27,9 +27,9 @@ CLASSIFIERS = [
     "Topic :: Scientific/Engineering :: Information Analysis"
 ]
 
-setup(name='mirage-chatbot-analytics',
+setup(name='anallyticabot',
       version=__version__,
-      url='https://github.com/DougTrajano/mirage-chatbot-analytics',
+      url='https://github.com/DougTrajano/anallyticabot',
       license='GPL',
       author='Douglas Trajano',
       author_email='douglas.trajano@outlook.com',

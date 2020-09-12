@@ -1,9 +1,9 @@
-# mirage-chatbot-analytics
+# anallyticabot
 
 
 [![Python Version](https://img.shields.io/pypi/pyversions/Django)](https://pypi.org/project/pandas/)
 
-Mirage Chatbot Analytics is Python package with analytical tools to improve your amazing chatbot.
+**anallyticabot** is Python package with analytical tools to improve your amazing chatbot.
 
 **Intents**
 - IntentsDiscovery
@@ -12,7 +12,7 @@ Mirage Chatbot Analytics is Python package with analytical tools to improve your
 ## Instalation
 
 ```
-pip install mirage-chatbot-analytics
+pip install anallyticabot
 ```
 
 ## Get started
