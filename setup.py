@@ -15,7 +15,7 @@ CLASSIFIERS = [
     "Development Status :: 2 - Pre-Alpha",
     "Operating System :: OS Independent",
     "Intended Audience :: Customer Service",
-    "Intended Audience :: Developers"
+    "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
