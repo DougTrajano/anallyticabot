@@ -1,5 +1,6 @@
 # anallyticabot
 
+![](images/anallyticabot_logo.png)
 
 [![Python Version](https://img.shields.io/pypi/pyversions/Django)](https://pypi.org/project/pandas/)
 
@@ -18,9 +19,3 @@ pip install anallyticabot
 ## Get started
 
 You can have a quickly overview on [notebooks](notebooks) folder how to use this package.
-
-# Why this name?
-
-The name of this lib came from a map in Counter Strike: Global Offensive.
-
-![](https://liquipedia.net/commons/images/thumb/f/f3/Csgo_mirage.jpg/600px-Csgo_mirage.jpg)
