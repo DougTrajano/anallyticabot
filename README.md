@@ -1,21 +1,13 @@
-# anallyticabot
-
 ![](images/anallyticabot_logo.png)
 
-[![Python Version](https://img.shields.io/pypi/pyversions/Django)](https://pypi.org/project/pandas/)
+**[anallyticabot](https://anallyticabot.herokuapp.com/)** is an amazing **Data App** with analytical tools to improve your amazing chatbot.
 
-**anallyticabot** is Python package with analytical tools to improve your amazing chatbot.
+With this application you can have access to several analysis to improve your chatbot.
 
-**Intents**
-- IntentsDiscovery
-- Decomposition Analysis
+## How you use it?
 
-## Instalation
+Go to https://anallyticabot.herokuapp.com/ and have fun!
 
-```
-pip install anallyticabot
-```
+---
 
-## Get started
-
-You can have a quickly overview on [notebooks](notebooks) folder how to use this package.
+Created with [streamlit.io](streamlit.io)
