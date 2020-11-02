@@ -9,12 +9,25 @@ from app.intents.similarity import *
 from app.settings import *
 from app.documentation import *
 
+parameters = {
+    "alert_timeout": 0.5,
+    "disable_streamlit_menu": True
+}
+
+
 st.beta_set_page_config(page_title="Anallyticabot", layout="wide",
                         page_icon="images/icon.ico")
 
-parameters = {
-    "alert_timeout": 0.5
-}
+if parameters.get("disable_streamlit_menu") == True:
+    hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+
+    """
+
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 app = MultiApp()
 
