@@ -14,9 +14,7 @@ def settings_page(state):
 
     st.markdown("## Watson Assistant - Credenciais")
     st.write(
-        "Precisa de ajuda? Veja essa página [Finding credentials in the UI](https://cloud.ibm.com/apidocs/assistant/assistant-v2#finding-credentials-in-the-ui) na documentação da IBM Cloud.")
-
-    st.write(state.watson_args)
+        "Need help? See this [Finding credentials in the UI](https://cloud.ibm.com/apidocs/assistant/assistant-v2#finding-credentials-in-the-ui) page in the IBM Cloud documentation.")
 
     if state.watson_args["connected"] == False:
         # Form without default values
@@ -34,20 +32,26 @@ def settings_page(state):
             desconnect_button(state)
 
     st.write("""
-    ## NLP
+    ## NLP - Natural Language Processing
     
-    Nessa sessão nós vamos configurar o que será aplicado nas diversas análises que envolvem processamento de texto.
+    In this session we will configure some NLP features that will be applied to the various analyzes that involve text processing.
     """)
 
+    st.write("""
+    ### Stopwords
+    Stop words are words which are filtered out before or after processing of natural language data (text).
+    """)
+    
     uploaded_file = st.file_uploader(
-        "Stopwords: (stopwords.txt)", type=["txt"])
+        "Send a list of stopwords", type=["txt"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, sep="\n", names=["stopwords"])
         if len(df) > 0:
             state.stopwords = df["stopwords"].tolist()
-        st.write("Stopwords uploaded: {}".format(len(state.stopwords)))
+        st.write("Stopwords count: {}".format(len(state.stopwords)))
     
-    #state.sync()
+
+    state.sync()
 
 
 def watson_connected(state):
@@ -71,25 +75,28 @@ def watson_not_connected(state):
 
 def connect_button(state):
     watson_check = None
-    if st.button("Conectar"):
+    if st.button("Connect"):
         watson_check = test_watson_connection(
             state.watson_args["skill_id"], state.watson_args["apikey"], state.watson_args["endpoint"])
         if isinstance(watson_check, dict):
             if watson_check["status"] == "Not Available":
-                st.error("Falha ao tentar conectar com o Watson Assistant.")
+                st.error("Fails to connect with Watson Assistant.")
                 state.watson_args["connected"] = False
+                state.watson_args["language"] = watson_check["language"]
+                if state.watson_args["skill_name"] == "":
+                    state.watson_args["skill_name"] = watson_check["name"]
                 time.sleep(0.5)
             else:
-                st.info("Watson Assistant conectado com sucesso.")
+                st.success("Watson Assistant connected.")
                 state.watson_args["connected"] = True
-                time.sleep(0.5)
+                time.sleep(0.3)
 
 def desconnect_button(state):
-    if st.button("Desconectar"):
+    if st.button("Disconnect"):
         if isinstance(state.watson_args, dict):
             state.watson_args = None
-            st.success("Watson Assistant foi desconectado.")
+            st.success("Watson Assistant has been disconnected.")
             time.sleep(0.5)
         else:
-            st.error("Nenhuma skill do Watson Assistant estava conectada.")
+            st.error("No Watson Assistant skills were connected.")
             time.sleep(0.5)

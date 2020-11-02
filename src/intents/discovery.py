@@ -31,7 +31,7 @@ class IntentsDiscovery:
         score_list = []
         for i in range(min_n_clusters, max_n_clusters, step_n_clusters):
             if in_search:
-                st.write("Testando `n_clusters`: {}".format(i))
+                st.write("Training model to `n_clusters`: {}".format(i))
                 temp = self.clustering(data=data, n_clusters=i, apply_cluster_name=False)
                 session_data = temp["scores"]
                 session_data["n_clusters"] = i
@@ -47,7 +47,7 @@ class IntentsDiscovery:
                             if sess["silhouette_score"] == max_silhouette:
                                 self.n_clusters = sess["n_clusters"]
 
-        st.write("Encontramos o melhor `n_clusters`. É {}.".format(self.n_clusters))
+        st.write("We found the best `n_clusters`. Is {}.".format(self.n_clusters))
 
         return self.n_clusters
 

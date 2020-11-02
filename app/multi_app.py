@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit.hashing import _CodeHasher
 from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
+from app.helper_functions import check_watson
 
 class MultiApp:
     """Framework for combining multiple streamlit applications.
@@ -26,7 +27,7 @@ class MultiApp:
     def __init__(self):
         self.apps = []
 
-    def add_app(self, title, func):
+    def add_app(self, title, func, logged_page=False):
         """Adds a new application.
         Parameters
         ----------
@@ -38,32 +39,31 @@ class MultiApp:
         """
         self.apps.append({
             "title": title,
-            "function": func
+            "function": func,
+            "logged_page": logged_page
         })
 
-    def run(self, title):
+    def run(self, title="Data App", parameters=None):
         state = _get_state()
 
+        if isinstance(parameters, dict):
+            for key in parameters.keys():
+                state[key] = parameters[key]
+
         st.sidebar.image("images/anallyticabot_logo.png", use_column_width=True)
-        
+        st.sidebar.markdown('<img src="https://lh3.googleusercontent.com/proxy/IXXuiLTIfIN8KTt9eNIWW-L2QLiG8NY8OB4TjKxCSxMQ5FHZ21F30uN88U7_K-9wIPl5TdUWSob-tjIJbBeKD1nGj9TVwHy5Iv12n0k" style="{ width: 100px; margin-left: auto; margin-right: auto; display: block; text-align: center; }" alt="With Watson">', unsafe_allow_html=True)
+
+        if check_watson(state) == False:
+            self.apps = [app for app in self.apps if app["logged_page"] != True]
+
         app = st.sidebar.radio(
-            'Pages',
+            ' ',
             self.apps,
             format_func=lambda app: app['title'])
 
-        st.sidebar.subheader("Sentiu falta de algo?")
-        st.sidebar.markdown("""        
-        Registre um [issue](https://github.com/DougTrajano/anallyticabot/issues/new/choose) no nosso GitHub:)
-        """)
-
-        st.sidebar.subheader("Sobre anallyticabot")
-        st.sidebar.markdown("""
-        Obrigado por usar anallyticabot
-
-        É feito com muito amor para a comunidade. :blue_heart:
-        
-        """)
-        app['function'](state)
+        if st.sidebar.button("Clear session"):
+            state.clear()
+        app['function'](state)      
 
         state.sync()
 

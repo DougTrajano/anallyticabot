@@ -6,20 +6,19 @@ from app.helper_functions import *
 def DecomAnalysis_page(state):
     st.title("Decomposition Analysis")
     st.markdown("""
-    Sempre que adicionamos uma nova intenção no modelo, queremos saber como ela irá impactar na qualidade do nosso chatbot, seja de forma positiva ou negativa.
+    When we add a new intent to the model, we want to know how it will fit with our old intents.
+
+    Perhaps the new intent can conflict with old intents. To check how the new intent fit on our model, we use **Decomposition Analysis**.
     
-    Nessa análise nós iremos entender como os exemplos e as intenções estão próximas umas das outras.
+    In this analysis we will understand how the examples and intents are close to each other.
     
-    Existem 3 algoritmos disponíveis para você testar.
+    There are 3 algorithms available for you to test.
     """)
 
-    if not check_watson(state):
-        not_connected_page(state)
-
     decomposition_method = st.selectbox(
-        "Qual algoritmo você deseja executar?", options=['PCA', 'TSNE', 'truncated SVD'])
+        "Which algorithm do you want to run?", options=['PCA', 'TSNE', 'truncated SVD'])
 
-    if st.button("Executar"):
+    if st.button("Run analysis"):
         from src.intents.decomposition_analysis import ExamplesDA, IntentsDA, prepareDataIntents
         from src.connectors.watson_assistant import WatsonAssistant
 
@@ -39,7 +38,7 @@ def DecomAnalysis_page(state):
 
         pca_examples.prepare_data()
         pca_examples.generate_fig(
-            title="Exemplos - Decomposition Analysis ({})".format(decomposition_method))
+            title="Examples - Decomposition Analysis ({})".format(decomposition_method))
 
         # Decomposition Analysis - Intents
         pca_intents = IntentsDA(examples=data["examples"], intents=data["intents"],
@@ -47,20 +46,22 @@ def DecomAnalysis_page(state):
 
         pca_intents.data = prepareDataIntents(pca_examples.data)
         pca_intents.generate_fig(
-            title="Intenções - Decomposition Analysis ({})".format(decomposition_method))
+            title="Intents - Decomposition Analysis ({})".format(decomposition_method))
 
         st.markdown("""
         ## Exemplos - Decomposition Analysis
-        Aqui nós podemos ver a distribuição dos exemplos em um gráfico bidimensional.
+        We can see the distribution of the examples in a 2D chart.
 
-        Cada ponto no gráfico abaixo é um exemplo.
+        Each point in the chart below is an example.
         """)
-        st.plotly_chart(pca_examples.fig)
+        st.plotly_chart(pca_examples.fig, use_container_width=True)
 
         st.markdown("""
-        ## Intenções - Decomposition Analysis
-        Aqui nós podemos ver a distribuição das intenções em um gráfico bidimensional.
-        
-        Cada ponto no gráfico abaixo é a média dos exemplos da intenção.
+        ## Intents - Decomposition Analysis
+        We can see the distribution of intents in a 2D chart.
+
+        Each point in the chart below is the average of examples points for each intent.
         """)
-        st.plotly_chart(pca_intents.fig)
+        st.plotly_chart(pca_intents.fig, use_container_width=True)
+
+    state.sync()

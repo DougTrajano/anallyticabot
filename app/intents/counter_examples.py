@@ -1,56 +1,58 @@
+import time
 import pandas as pd
 import streamlit as st
 from app.helper_functions import *
 
-
-def irrelevant_examples_page(state):
-    st.title("Counter examples")
+def counterexamples_page(state):
+    st.title("Counterexamples")
     st.markdown("""
-    Os contra-exemplos (*counter examples*) no Watson Assistant são usados sempre que queremos evitar responder uma mensagem indesejada.
+    Counterexamples in Watson Assistant are used when we want to avoid answer incorrectly for some user inputs.
 
-    Dentro do Watson Assistant não é possível acessar quais exemplos foram cadastrados como contra-exemplo.
+    In IBM Cloud it isn't possible to manage counterexamples, you can only add new counerexamples in "Try out".
 
-    Por isso, disponibilizamos aqui essa página para você gerenciar isto.
+    We have created this page for you see and delete counterexamples as needed.
     """)
+    from src.connectors.watson_assistant import WatsonAssistant
+    wa = WatsonAssistant(apikey=state.watson_args["apikey"],
+                         service_endpoint=state.watson_args["endpoint"],
+                         default_skill_id=state.watson_args["skill_id"])
 
-    if not check_watson(state):
-        not_connected_page(state)
-    else:
-        from src.connectors.watson_assistant import WatsonAssistant
-        wa = WatsonAssistant(apikey=state.watson_args["apikey"],
-                                service_endpoint=state.watson_args["endpoint"],
-                                default_skill_id=state.watson_args["skill_id"])
+    # Add new counter example
+    counter_example = st.text_input("Add counterexample")
 
-        # Add new counter example
-        counter_example = st.text_input("Novo exemplo irrelevante")
-
-        if st.button("Cadastrar"):
-            response = wa.add_counterexamples(counter_example)
-            if response["success"]:
-                st.success("Exemplo irrelevante adicionado.")
-            else:
-                st.error("Ops! Falha ao adicionar o exemplo irrelevante.")
-
-        # Getting counter examples
-        counter_examples = wa.get_counterexamples()
-        counter_examples = counter_examples["counterexamples"]
-
-        if len(counter_examples) > 0:
-            col1, col2 = st.beta_columns(2)
-            col1.header("Exemplos irrelevantes")
-            col2.header("Ações")
-
-            for i in range(len(counter_examples)):
-                ckey = "counter_examples_{}".format(i)
-                col1.write(counter_examples[i])
-                cbutton = col2.button("Deletar", key=ckey)
-                if cbutton:
-                    pos = int(ckey.split("_")[-1])
-                    response = wa.delete_counterexamples(counter_examples[pos])
-                    if response["success"]:
-                        st.success("Exemplo irrelevante deletado.")
-                    else:
-                        st.error("Falha ao deletar exemplo irrelevante.")
-
+    if st.button("Insert"):
+        response = wa.add_counterexamples(counter_example)
+        if response["success"]:
+            st.success("Counterexample added.")
+            time.sleep(state.alert_timeout)
         else:
-            st.markdown("Não encontramos exemplos irrelevantes treinados nessa skill do Watson Assistant.")
+            st.error("Failed to add the counterexample.")
+            time.sleep(state.alert_timeout)
+
+    # Getting counter examples
+    counter_examples = wa.get_counterexamples()
+    counter_examples = counter_examples["counterexamples"]
+
+    if len(counter_examples) > 0:
+        col1, col2 = st.beta_columns(2)
+        col1.header("Counterexamples")
+        col2.header("Actions")
+
+        for i in range(len(counter_examples)):
+            ckey = "counter_examples_{}".format(i)
+            col1.write(counter_examples[i])
+            cbutton = col2.button("Delete", key=ckey)
+            if cbutton:
+                pos = int(ckey.split("_")[-1])
+                response = wa.delete_counterexamples(counter_examples[pos])
+                if response["success"]:
+                    st.success("Counterexample deleted.")
+                    time.sleep(state.alert_timeout)
+                else:
+                    st.error("Failed to delete counterexample.")
+                    time.sleep(state.alert_timeout)
+    else:
+        st.markdown(
+            "We have no counterexamples in this Watson Assistant skill.")
+
+    state.sync()
