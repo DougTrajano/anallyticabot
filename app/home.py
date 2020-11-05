@@ -24,21 +24,28 @@ def main_page(state):
     col3.markdown("<h2 style='text-align: center;'>Raise conversion and retention rates</h2>", unsafe_allow_html=True)
     col3.markdown("<span style='text-align: center; display: flex; justify-content: center;'>Provides insights into user journeys so you can take data-driven decisions</span>", unsafe_allow_html=True)
 
-    st.write("""
-    # How it works
+    st.write("# How it works")
     
+    st.write("""
     ## Measure
+    > (in development)
 
     The reports tracks bot health metrics (e.g., intents quality, conflicts), measure retention by date or intent.
+    """)
 
+    st.write("""
     ## Analyze
 
-    The Session Flow Report offers a powerful visualization of the most common user journeys. See the most commun intents, complete with usage statistics and exit rates at each conversation turn.
+    The Decomposition Analysis offers a powerful 2D visualization of intents model, see the most similar examples and manage your counterexamples quickly.
+    """)
+    st.image("images/decomposition_analysis_intents.png", width=600)
 
+    st.write("""
     ## Optimize
 
-    The Messages Report groups similar problematic messages, uncovering functionality gaps. Transcripts are provided for context. For bots at a certain scale, machine learning helps suggest improvements.
+    Discover new intents using unsupervised machine learning based on unanswered messages or agent transcripts.
     """)
+    st.image("images/intents_discovery.png", width=600)
 
     st.write("---")
 

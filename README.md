@@ -1,8 +1,10 @@
 ![](images/anallyticabot_logo.png)
 
-**[anallyticabot](https://anallyticabot.herokuapp.com/)** is an amazing **Data App** with analytical tools to improve your amazing chatbot.
+**[Anallyticabot](https://anallyticabot.herokuapp.com/)** unlock insights from your data to create the right AI-powered conversational experiences.
 
-With this application you can have access to several analysis to improve your chatbot.
+Anallyticabot is free to use and is an open source project! 💙
+
+![](images/home_page.png)
 
 ## How you use it?
 

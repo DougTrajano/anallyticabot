@@ -9,6 +9,7 @@ from sklearn.manifold import TSNE
 import nltk
 import pandas as pd
 import numpy as np
+import spacy
 
 SEED = 1993
 np.random.seed(SEED)
@@ -72,8 +73,9 @@ class ExamplesDA():
             else:
                 stopwords = nltk.corpus.stopwords.words('portuguese')
 
+        nlp = spacy.load('pt_core_news_md')
         self.examples_processed = [normalize_text(
-            example, stopwords) for example in self.examples]
+            example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
         if isinstance(self.examples_processed, list):
@@ -161,8 +163,9 @@ class IntentsDA():
             else:
                 stopwords = nltk.corpus.stopwords.words('portuguese')
 
+        nlp = spacy.load('pt_core_news_md')
         self.examples_processed = [normalize_text(
-            example, stopwords) for example in self.examples]
+            example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
         if isinstance(self.examples_processed, list):

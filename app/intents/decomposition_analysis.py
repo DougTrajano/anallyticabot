@@ -49,7 +49,7 @@ def DecomAnalysis_page(state):
             title="Intents - Decomposition Analysis ({})".format(decomposition_method))
 
         st.markdown("""
-        ## Exemplos - Decomposition Analysis
+        ## Examples - Decomposition Analysis
         We can see the distribution of the examples in a 2D chart.
 
         Each point in the chart below is an example.
