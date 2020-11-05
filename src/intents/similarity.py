@@ -3,33 +3,26 @@ import spacy
 import itertools
 import warnings
 import pandas as pd
+from src.intents.nlp_utils.text_preprocessing import normalize_text
 
-def prepare_data(df):
-    intents = df["intents"].unique()
-    
-    lst = []
-    for intent in intents:
-        examples = df[df["intents"] == intent]["examples"].tolist()
-        lst.append({"intent": intent, "examples": examples})
-    return lst
-
-def gen_similarity(intents, stopwords=None):
-    from src.intents.nlp_utils.text_preprocessing import normalize_text
-    nlp = spacy.load('pt_core_news_sm')
+def apply_similarity(examples, intents):
+    nlp = spacy.load('pt_core_news_md')
 
     lst = []
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    docs = nlp.pipe(examples)
+    docs = list(itertools.combinations(docs, 2))
+    docs_size = len(docs)
 
-        pbar = st.progress(0)
-        for i in range(len(intents)):
-            docs = itertools.combinations(intents[i]["examples"], 2)
-            for doc in docs:
-                e1 = nlp(normalize_text(doc[0], stopwords, lemmatizer=True))
-                e2 = nlp(normalize_text(doc[1], stopwords, lemmatizer=True))
-                similarity = e1.similarity(e2)
-                result = {"intent": intents[i]["intent"], "example_1": doc[0], "example_2": doc[1], "similarity": similarity}
-                lst.append(result)
-            pbar.progress(i / len(intents))
+    counter = 0
+    pbar = st.progress(0)
+    for doc in docs:
+        similarity = doc[0].similarity(doc[1])
+        intent = intents[examples.index(doc[0].text)]
+        similar_intent = intents[examples.index(doc[1].text)]
+        result = {"intent": intent, "example": doc[0].text, "similar example": doc[1].text, "similar intent": similar_intent, "similarity": similarity}
+        lst.append(result)
+
+        counter += 1
+        pbar.progress(counter / docs_size)
 
     return lst

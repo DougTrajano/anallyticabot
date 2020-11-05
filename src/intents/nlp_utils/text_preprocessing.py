@@ -5,10 +5,10 @@ import spacy
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.pipeline import Pipeline
 
-nlp = spacy.load("pt_core_news_lg")
-
-def normalize_text(example, stopwords=None, lemmatizer=True):
-
+def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
+    if nlp == None:
+        nlp = spacy.load("pt_core_news_md")
+        
     # Lower string
     example = example.lower()
     

@@ -127,6 +127,7 @@ def discovery_page(state):
             """)
 
             df_score = pd.DataFrame(intents_discovery.search_data)
+
             st.plotly_chart(px.line(df_score, x="n_clusters", y="silhouette_score",
                                     title="Silhouette score"), use_container_width=True)
 
@@ -145,14 +146,15 @@ def discovery_page(state):
             st.markdown("""
             ## Topics
 
-            Below we can see the main topics that were found.
+            Below we can see the topics that were found.
             """)
 
-            df_topics = df.groupby("labels").count(
-            ).sort_values("examples", ascending=True)
-
-            fig = px.bar(df_topics, orientation='h', title="{} topics for {} messages.".format(
-                len(df_topics), df_topics["examples"].sum()))
+            df_topics = df.groupby("labels").count()
+            df_topics.sort_values("examples", inplace=True, ascending=True)
+            df_topics.reset_index(inplace=True)
+            
+            fig_title = "{} topics for {} messages.".format(len(df_topics), df_topics["examples"].sum())
+            fig = px.bar(df_topics, x="examples", y="labels", orientation="h", hover_name="labels", hover_data=["labels"], title=fig_title)
             fig.layout.update(showlegend=False)
             st.plotly_chart(fig, use_container_width=True)
 

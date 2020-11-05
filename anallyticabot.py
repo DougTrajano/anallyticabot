@@ -6,6 +6,7 @@ from app.intents.counter_examples import *
 from app.intents.decomposition_analysis import *
 from app.intents.discovery import *
 from app.intents.similarity import *
+from app.dialogflow import *
 from app.settings import *
 from app.documentation import *
 

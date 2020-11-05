@@ -3,17 +3,15 @@ import streamlit as st
 def main_page(state):
     st.title("Anallyticabot")
     st.write("""
-    Anallyticabot is a platform that provides **advanced analytics** to help you improve your chatbot.
+    Unlock insights from data to create the right AI-powered conversational experiences for customer service.
     
-    Identify and improve your virtual assistant's experiences easily and quickly. Anallyticabot is free to use and is an open source project! :blue_heart:
+    Anallyticabot is free to use and is an open source project! :blue_heart:
     """)
-    
+
     st.markdown('# Have questions about your chatbot? <span style="color:#3399FF"><b>Anallyticabot has answers.</b></span>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.beta_columns(3)
 
-    # https://www.flaticon.com/svg/static/icons/svg/3089/3089686.svg
-    # https://www.flaticon.com/svg/static/icons/svg/3043/3043500.svg
     col1.markdown('<img src="https://www.flaticon.com/svg/static/icons/svg/747/747240.svg" style="{ width: 100px; margin-left: auto; margin-right: auto; display: block; text-align: center; }" alt="Save time tracking metrics">', unsafe_allow_html=True)
     col1.markdown("<h2 style='text-align: center;'>Save time tracking metrics</h2>", unsafe_allow_html=True)
     col1.markdown("<span style='text-align: center; display: flex; justify-content: center;'>Replaces patchwork, time-consuming approaches with advanced analytics</span>", unsafe_allow_html=True)
@@ -40,12 +38,6 @@ def main_page(state):
     ## Optimize
 
     The Messages Report groups similar problematic messages, uncovering functionality gaps. Transcripts are provided for context. For bots at a certain scale, machine learning helps suggest improvements.
-    """)
-    st.write("""
-    # Get started
-
-    - Go to the **"Settings"** page and connect with your Watson Assistant skill.
-    - In **"Settings"** page, you can configure the global settings of the platform.
     """)
 
     st.write("---")

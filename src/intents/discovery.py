@@ -8,6 +8,7 @@ from sklearn.metrics import silhouette_score
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
 import streamlit as st
+import spacy
 
 SEED = 1993
 np.random.seed(SEED)
@@ -26,18 +27,19 @@ class IntentsDiscovery:
 
         https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html
         """
-        
+
         in_search = True
         score_list = []
         for i in range(min_n_clusters, max_n_clusters, step_n_clusters):
             if in_search:
                 st.write("Training model to `n_clusters`: {}".format(i))
-                temp = self.clustering(data=data, n_clusters=i, apply_cluster_name=False)
+                temp = self.clustering(
+                    data=data, n_clusters=i, apply_cluster_name=False)
                 session_data = temp["scores"]
                 session_data["n_clusters"] = i
                 score_list.append(session_data["silhouette_score"])
                 self.search_data.append(session_data)
-                
+
                 if len(score_list) > 2 and isinstance(early_stopping, int):
                     if self.count_early_stopping(score_list) >= early_stopping:
                         in_search = False
@@ -90,23 +92,27 @@ class IntentsDiscovery:
         else:
             self._stopwords = None
 
-        normalized_texts = [normalize_text(text, self._stopwords) for text in self.data]
+        nlp = spacy.load("pt_core_news_md")
+        normalized_texts = [normalize_text(
+            text, nlp, self._stopwords) for text in self.data]
 
         if inplace:
             self.data_processed = normalized_texts
         else:
             return normalized_texts
 
-    def get_ngrams(self, text, n_grams=3):
+    def get_ngrams(self, text, n_grams=2):
         n_grams = ngrams(word_tokenize(text), n_grams)
         return [' '.join(grams) for grams in n_grams]
 
     def get_clusters_name(self, clean_texts=True):
         if clean_texts:
-            example = [normalize_text(text, self._stopwords, lemmatizer=False) for text in self.data]
+            nlp = spacy.load("pt_core_news_md")
+            example = [normalize_text(
+                text, nlp, self._stopwords, lemmatizer=False) for text in self.data]
         else:
             example = self.data
-            
+
         unique_labels = list(set(self.labels))
 
         df = pd.DataFrame({"example": example, "label": self.labels})
@@ -116,15 +122,18 @@ class IntentsDiscovery:
             ngrams = []
 
             for example in df_temp["example"].tolist():
-                temp = self.get_ngrams(example)
-                ngrams = ngrams + temp
+                ngrams = ngrams + self.get_ngrams(example)
 
+            if len(ngrams) == 0:
+                for example in df_temp["example"].tolist():
+                    ngrams = ngrams + self.get_ngrams(example, n_grams=1)
+                    
             try:
-                cluster_name = pd.Series(ngrams).value_counts().head(1).index[0]
+                cluster_name = pd.Series(
+                    ngrams).value_counts().head(1).index[0]
             except:
                 cluster_name = "undefined cluster"
             finally:
                 df["label"].replace(label, cluster_name, inplace=True)
-        
+
         self.labels = df["label"].tolist()
-    

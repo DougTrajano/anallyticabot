@@ -51,8 +51,9 @@ def counterexamples_page(state):
                 else:
                     st.error("Failed to delete counterexample.")
                     time.sleep(state.alert_timeout)
+                raise st.script_runner.RerunException(st.script_request_queue.RerunData(None))
     else:
         st.markdown(
             "We have no counterexamples in this Watson Assistant skill.")
-
+    
     state.sync()
