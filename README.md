@@ -20,7 +20,7 @@ Anallyticabot is free to use and is an open source project! 💙
 To run Anallyticabot via Docker, just type
 
 ```
-docker run -d -p 8051:8051 --name dougtrajano/anallyticabot
+docker run --name anallyticabot dougtrajano/anallyticabot
 ```
 
 ## Locally
