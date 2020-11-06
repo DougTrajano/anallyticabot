@@ -3,7 +3,6 @@ import spacy
 import itertools
 import warnings
 import pandas as pd
-from src.intents.nlp_utils.text_preprocessing import normalize_text
 
 def apply_similarity(examples, intents):
     nlp = spacy.load('pt_core_news_md')
