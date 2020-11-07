@@ -12,6 +12,7 @@ Anallyticabot is free to use and is an open source project! 💙
 - Decomposition Analysis (2D chart for intents model)
 - Intents Discovery
 - Examples similarity
+- Watson predictions validation
 
 # Installation
 
