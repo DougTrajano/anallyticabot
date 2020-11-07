@@ -4,7 +4,7 @@ import streamlit as st
 from app.helper_functions import *
 
 
-def ExamplesSimilarity_page(state):
+def similarity_page(state):
     st.title("Examples similarity")
     st.markdown("""
     Intents must have different examples for the same purpose.
@@ -29,7 +29,7 @@ def ExamplesSimilarity_page(state):
         st.markdown("""
         File format
 
-        | intent | example |
+        | example | intent |
         | - | - |
         | I want an order status | #check_order |
         | How to check my order? | #check_order |

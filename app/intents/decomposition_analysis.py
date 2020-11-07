@@ -3,7 +3,7 @@ import streamlit as st
 from app.helper_functions import *
 
 
-def DecomAnalysis_page(state):
+def decomposition_page(state):
     st.title("Decomposition Analysis")
     st.markdown("""
     When we add a new intent to the model, we want to know how it will fit with our old intents.

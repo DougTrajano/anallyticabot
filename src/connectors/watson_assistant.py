@@ -70,7 +70,18 @@ class WatsonAssistant:
 
         return response
 
+    @retries(max_attempts=3, wait=1.0)
     def add_counterexamples(self, txt, skill_id=None):
+        """
+        Add counterexample to Watson Assistant skill.
+
+        Arguments:
+        - txt (str, required): The counterexample to be added in Watson Assistant skill.
+        - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
+
+        Output:
+        - Dict with "success" indicating True or False and Watson Assistant payload: create_counterexample().
+        """         
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
@@ -88,7 +99,17 @@ class WatsonAssistant:
             response = {"success": False}
         return response
 
+    @retries(max_attempts=3, wait=1.0)
     def get_counterexamples(self, skill_id=None):
+        """
+        Get counterexamples from Watson Assistant skill.
+
+        Arguments:
+        - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
+
+        Output:
+        - Dict with "success" indicating True or False and "counterexamples" with Watson Assistant's counterexamples.
+        """        
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
@@ -109,7 +130,18 @@ class WatsonAssistant:
         finally:
             return response
 
+    @retries(max_attempts=3, wait=1.0)
     def delete_counterexamples(self, txt, skill_id=None):
+        """
+        Delete counterexample from Watson Assistant.
+
+        Arguments:
+        - txt (str, required): The counterexample to be deleted.
+        - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
+
+        Output:
+        - Watson Assistant payload: delete_counterexample().
+        """
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
@@ -128,6 +160,7 @@ class WatsonAssistant:
         finally:
             return response
 
+    @retries(max_attempts=3, wait=1.0)
     def check_connection(self, skill_id=None):
         """
         Check connection with Watson workspace.
@@ -136,7 +169,7 @@ class WatsonAssistant:
         - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
 
         Output:
-        - True or False
+        - Watson Assistant payload: get_workspace().
         """
         # Parameters check
         if skill_id == None:
@@ -155,6 +188,35 @@ class WatsonAssistant:
                         "message": "Failed to connect to this Watson Assistant instance."}
         finally:
             return response
+
+    def send_message(self, message, skill_id=None):
+        """
+        Check connection with Watson workspace.
+
+        Arguments:
+        - message (str, required): The message that needs to be send to Watson.
+        - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
+
+        Output:
+        - Watson Assistant payload: message().
+        """
+        # Parameters check
+        if skill_id == None:
+            if self.default_skill_id == None:
+                raise AttributeError("skill_id is missing.")
+            else:
+                skill_id = self.default_skill_id
+        else:
+            self.default_skill_id = skill_id
+
+        if not isinstance(message, str):
+            raise ValueError("message needs to be string.")
+        if len(message) < 1 or len(message) > 2048:
+            raise ValueError("message constraints: 1 ≤ length ≤ 2048")
+
+        return self.assistant.message(workspace_id=skill_id,
+                                      input={"text": message},
+                                      alternate_intents=True).get_result()
 
     def get_intents(self):
         """
@@ -207,6 +269,18 @@ class WatsonAssistant:
         return query
 
     def get_logs(self, skill_id=None, query=None, sort="-request_timestamp", max_logs=5000):
+        """
+
+        Arguments:
+        - skill_id (str, optional, default will be provided by class): The skill/worksapce id of your Watson Assistant.
+        - query (str, optional, default is None and will return logs for last 7 days): The query to be passed to Watson API, see IBM Cloud docs for more details.
+        - sort (str, optional, default is "-request_timestamp"): The sort parameter to be passed to Watson API, see IBM Cloud docs for more details.
+        - max_logs (int, optional, default is 5000): The max quantity of logs to be collected.
+
+        Output:
+        - A list with logs requested.
+        """
+        
         if skill_id == None:
             skill_id = self.default_skill_id
 

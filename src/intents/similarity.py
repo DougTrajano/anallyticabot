@@ -13,7 +13,7 @@ def apply_similarity(examples, intents):
     docs_size = len(docs)
 
     counter = 0
-    pbar = st.progress(0)
+    pbar = st.progress(counter)
     for doc in docs:
         similarity = doc[0].similarity(doc[1])
         intent = intents[examples.index(doc[0].text)]
