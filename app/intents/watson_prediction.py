@@ -101,7 +101,7 @@ def watson_prediction_page(state):
 
             st.write("Rows selected: {}".format(len(data)))
 
-            link = download_link(data, "similarity.csv", "Download CSV file")
+            link = download_link(data, "watson_prediction.csv", "Download CSV file")
             st.markdown(link, unsafe_allow_html=True)
 
             st.write(data)
