@@ -2,7 +2,7 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
-from src.intents.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
+from src.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 from sklearn.manifold import TSNE

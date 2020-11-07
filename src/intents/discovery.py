@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import logging
 import nltk
-from src.intents.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
+from src.nlp_utils.text_preprocessing import normalize_text, apply_tfidf
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from nltk.tokenize import word_tokenize

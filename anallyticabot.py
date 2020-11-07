@@ -3,13 +3,14 @@ from src.helper_functions import *
 
 from app.multi_app import *
 from app.home import *
+from app.settings import *
+from app.documentation import *
+
 from app.intents.counter_examples import *
 from app.intents.decomposition_analysis import *
 from app.intents.discovery import *
 from app.intents.similarity import *
 from app.intents.watson_prediction import *
-from app.settings import *
-from app.documentation import *
 
 parameters = load_parameters("properties/application.json")
 
