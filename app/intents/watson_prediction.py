@@ -31,39 +31,30 @@ def watson_prediction_page(state):
     # UPLOAD FILE
     uploaded_file = st.file_uploader(
         "Attach file", type=["csv", "xlsx"])
-    if uploaded_file == []:
-        uploaded_file = None
-            
     if uploaded_file is not None:
-        data = read_df(
-            uploaded_file, cols_names=["examples", "intents"])
+        data = read_df(uploaded_file, cols_names=["examples", "intents"])
         data = eval_intent_col(data)
-
         if state.watson_prediction is None:
-            state.watson_prediction = data
-        if isinstance(state.watson_prediction, pd.DataFrame):
-            if len(state.watson_prediction) == 0:
-                state.watson_prediction = data
-
-            if set(state.watson_prediction["examples"].tolist()) != set(data["examples"].tolist()):
-                state.watson_prediction = data
-
+            state.watson_prediction = data.copy()
+    else:
+        state.watson_prediction = None
+        
     # RUN ANALYSIS
     if isinstance(state.watson_prediction, pd.DataFrame):
         if len(state.watson_prediction) >= 500:
             st.warning("Caution! This analysis will make several API calls and will incur costs. It will make {} API calls.".format(
                 len(state.watson_prediction["examples"].tolist())))
-
+        
         if st.button("Run Analysis"):
             if "watson_intent_0" not in state.watson_prediction.columns:
                 st.write("Getting Watson predictions.")
 
-            data = run_predictions(df=state.watson_prediction,
-                                   watson_apikey=state.watson_args["apikey"],
-                                   watson_endpoint=state.watson_args["endpoint"],
-                                   watson_skill=state.watson_args["skill_id"])
+            data_processed = run_wa_preds(df=state.watson_prediction,
+                                          watson_apikey=state.watson_args["apikey"],
+                                          watson_endpoint=state.watson_args["endpoint"],
+                                          watson_skill=state.watson_args["skill_id"])
 
-            state.watson_prediction = cache_df(data.copy())
+            state.watson_prediction = cache_df(data_processed.copy())
 
     # SHOW DATASET
     if isinstance(state.watson_prediction, pd.DataFrame):
@@ -75,13 +66,15 @@ def watson_prediction_page(state):
             filters = {}
             if "intents" in data.columns:
                 filters["intents"] = st.multiselect(label="Filter intents",
-                                                    options=data["intents"].unique().tolist(),
+                                                    options=data["intents"].unique(
+                                                    ).tolist(),
                                                     default=data["intents"].unique().tolist())
             else:
                 filters["intents"] = None
 
             filters["wa_intents"] = st.multiselect(label="Filter Watson intents",
-                                                   options=data["watson_intent_0"].unique().tolist(),
+                                                   options=data["watson_intent_0"].unique(
+                                                   ).tolist(),
                                                    default=data["watson_intent_0"].unique().tolist())
 
             filters["wa_conf"] = st.slider('Watson confidence (0)', min_value=0.0,
@@ -101,7 +94,8 @@ def watson_prediction_page(state):
 
             st.write("Rows selected: {}".format(len(data)))
 
-            link = download_link(data, "watson_prediction.csv", "Download CSV file")
+            link = download_link(
+                data, "watson_prediction.csv", "Download CSV file")
             st.markdown(link, unsafe_allow_html=True)
 
             st.write(data)
