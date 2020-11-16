@@ -11,6 +11,7 @@ from app.intents.decomposition_analysis import *
 from app.intents.discovery import *
 from app.intents.similarity import *
 from app.intents.watson_prediction import *
+from app.intents.stop_words import *
 
 parameters = load_parameters("properties/application.json")
 
@@ -27,6 +28,7 @@ app.add_app("Intents - Counterexamples", counterexamples_page, logged_page=True)
 app.add_app("Intents - Decomposition Analysis", decomposition_page, logged_page=True)
 app.add_app("Intents - Discovery", discovery_page, logged_page=True)
 app.add_app("Intents - Examples Similarity", similarity_page, logged_page=True)
+app.add_app("Intents - Stop Words", stop_words_page, logged_page=True)
 app.add_app("Intents - Watson Prediction", watson_prediction_page, logged_page=True)
 app.add_app("Settings", settings_page)
 app.add_app("Documentation", documentation_page)
