@@ -31,13 +31,16 @@ def stop_words_page(state):
         """)
 
     df_sw = None
+
+    remove_numbers = st.checkbox('Not consider numbers')
+
     uploaded_file = st.file_uploader(
         "Attach file", type=["csv", "xlsx"])
     if uploaded_file is not None:
         df = read_df(uploaded_file, cols_names=["examples"])
         corpus = df["examples"].tolist()
         if len(corpus) > 0:
-            df_sw = get_stop_words(corpus)
+            df_sw = get_stop_words(corpus, remove_numbers)
 
     if isinstance(df_sw, pd.DataFrame):
         # Chart
