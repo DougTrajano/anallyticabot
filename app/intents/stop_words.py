@@ -41,17 +41,24 @@ def stop_words_page(state):
         corpus = df["examples"].tolist()
         if len(corpus) > 0:
             df_sw = get_stop_words(corpus, remove_numbers)
-
+            words_freqs = words_count(corpus)
+    
     if isinstance(df_sw, pd.DataFrame):
-        # Chart
-        fig = px.bar(df_sw.head(10).sort_values(by="idf", ascending=False),
-                     y="words", x="idf",
-                     title="Top 10 stopwords detected (by TF-IDF analysis)")
+        from wordcloud import WordCloud
 
-        st.plotly_chart(fig, use_container_width=True)
+        # Prep Word Cloud
+        wc_dict = {}
+        for word in df_sw["words"].tolist():
+            word_count = words_freqs.get(word)
+            if isinstance(word_count, int):
+                wc_dict[word] = word_count
+        wc = WordCloud(background_color="white", width=1920, height=1024).fit_words(wc_dict)
 
         # Download
-        link = download_link(df_sw, "stop_words.csv", "Download CSV file")
+        link = download_link(pd.DataFrame({"stop_words": df_sw["words"].tolist()}), "stop_words.csv", "Download CSV file with stopwords")
         st.markdown(link, unsafe_allow_html=True)
+
+        st.write("## Word Cloud (stop words)")
+        st.image(wc.to_array(), use_column_width=True)
 
     state.sync()
