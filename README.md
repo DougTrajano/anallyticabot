@@ -1,3 +1,5 @@
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/dougtrajano/anallyticabot/anallyticabot.py)
+
 ![](images/anallyticabot_logo.png)
 
 **[Anallyticabot](https://anallyticabot.herokuapp.com/)** unlock insights from your data to create the right AI-powered conversational experiences.
