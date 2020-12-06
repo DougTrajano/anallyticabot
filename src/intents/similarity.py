@@ -7,14 +7,18 @@ import pandas as pd
 def apply_similarity(examples, intents):
     nlp = spacy.load('pt_core_news_md')
 
-    lst = []
     docs = nlp.pipe(examples)
     docs = list(itertools.combinations(docs, 2))
+    docs.reverse()
+    
     docs_size = len(docs)
 
     counter = 0
     pbar = st.progress(counter)
-    for doc in docs:
+
+    lst = []
+    while len(docs) > 0:
+        doc = docs.pop()
         similarity = doc[0].similarity(doc[1])
         intent = intents[examples.index(doc[0].text)]
         similar_intent = intents[examples.index(doc[1].text)]
