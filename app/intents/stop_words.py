@@ -7,7 +7,7 @@ from src.intents.stop_words import *
 
 
 def stop_words_page(state):
-    st.title("Stop words")
+    st.title("Stop Words")
     st.markdown("""
     Stop words usually refers to the most common words in a language, there is no single universal list of stop words used by all natural language processing tools.
     
