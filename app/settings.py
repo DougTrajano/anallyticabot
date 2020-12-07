@@ -12,7 +12,7 @@ def settings_page(state):
     if not isinstance(state.watson_args, dict):
         state.watson_args = {"connected": False}
 
-    st.markdown("## Watson Assistant - Credenciais")
+    st.markdown("## Watson Assistant - Credentials")
     st.write(
         "Need help? See this [Finding credentials in the UI](https://cloud.ibm.com/apidocs/assistant/assistant-v2#finding-credentials-in-the-ui) page in the IBM Cloud documentation.")
 
