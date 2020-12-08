@@ -17,7 +17,7 @@ def similarity_page(state):
     | - | - | - | - | - |
     | #check_order | I want an order status | I want to check my order | #check_order | 0.83 |
     | #check_order | I want to check my order | I want to order something | #place_order | 0.74 |
-    | ... | ... | ... | ... |
+    | ... | ... | ... | ... | ... |
 
     Now that you understand the importance of this, let's go to the similarity analysis.
     """)
@@ -44,8 +44,11 @@ def similarity_page(state):
         if uploaded_file is not None:
             data = read_df(uploaded_file, cols_names=["examples", "intents"])
 
+    method = st.radio("Which technique do you want to run?", options=[
+                      "Compare all examples", "Compare examples inside intents"])
+    st.write('For large datasets/skills, "Compare all examples" can take too a long time.')
+
     if st.button("Run analysis"):
-        from src.intents.similarity import apply_similarity
         if sim_option == "Watson Assistant":
             from src.connectors.watson_assistant import WatsonAssistant
             wa = WatsonAssistant(apikey=state.watson_args["apikey"],
@@ -55,15 +58,19 @@ def similarity_page(state):
             data = wa.get_intents()
             data = pd.DataFrame(data)
 
-        # Estimate time
-        estimate = estimate_time(data["examples"].tolist())
+        if method == "Compare all examples":
+            from src.intents.similarity import apply_similarity
 
-        if estimate["expected_time"] > 120:
-            st.warning("You have a lot of data and this generated {combinations} combinations to analyse. Estimated time: {expected_time}".format(
-                combinations=estimate["combinations"], expected_time=str(datetime.timedelta(seconds=estimate["expected_time"]))))
+            data = apply_similarity(data["examples"].tolist(), data["intents"].tolist())
 
-        data = apply_similarity(
-            data["examples"].tolist(), data["intents"].tolist())
+        elif method == "Compare examples inside intents":
+            from src.intents.similarity import apply_similarity_intents
+
+            data = data.groupby('intents')['examples'].apply(list).reset_index(name='examples')
+            data = apply_similarity_intents(data["examples"].tolist(), data["intents"].tolist())
+
+        else:
+            st.error("Method not implemented yet.")
 
         data = pd.DataFrame(data)
         state.similarity_data = data
@@ -86,12 +93,3 @@ def similarity_page(state):
         st.dataframe(data)
 
     state.sync()
-
-
-def estimate_time(examples, each_time=0.000260974):
-    import itertools
-    combinations = list(itertools.combinations(examples, 2))
-    combinations_len = len(combinations)
-    expected_time = int(combinations_len * each_time)
-
-    return {"combinations": combinations_len, "expected_time": expected_time}

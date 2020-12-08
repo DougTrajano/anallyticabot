@@ -29,3 +29,25 @@ def apply_similarity(examples, intents):
         pbar.progress(counter / docs_size)
 
     return lst
+
+def apply_similarity_intents(examples_lst, intents):
+    nlp = spacy.load('pt_core_news_md')
+
+    counter = 0
+    pbar = st.progress(counter)
+
+    lst = []
+    for examples, intent in zip(examples_lst, intents):
+        docs = nlp.pipe(examples)
+        docs = list(itertools.combinations(docs, 2))
+
+        while len(docs) > 0:
+            doc = docs.pop()
+            similarity = doc[0].similarity(doc[1])
+            result = {"intent": intent, "example": doc[0].text, "similar example": doc[1].text, "similar intent": intent, "similarity": similarity}
+            lst.append(result)
+
+        counter += 1
+        pbar.progress(counter / len(intents))
+
+    return lst
