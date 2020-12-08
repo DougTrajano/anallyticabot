@@ -1,0 +1,36 @@
+name: Build and push Docker Image
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: user/anallyticabot:latest
+          build-args: |
+            arg1=value1
+            arg2=value2
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
