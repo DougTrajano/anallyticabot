@@ -1,6 +1,6 @@
 ![](images/anallyticabot_logo.png)
 
-**[Anallyticabot](https://anallyticabot.herokuapp.com/)** unlock insights from your data to create the right AI-powered conversational experiences.
+**[Anallyticabot](https://share.streamlit.io/dougtrajano/anallyticabot/anallyticabot.py)** unlock insights from your data to create the right AI-powered conversational experiences.
 
 Anallyticabot is free to use and is an open source project! 💙
 
