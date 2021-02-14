@@ -55,7 +55,7 @@ def download_link(object_to_download, download_filename, download_link_text):
     download_link(YOUR_STRING, 'YOUR_STRING.txt', 'Click here to download your text!')
 
     """
-    if isinstance(object_to_download,pd.DataFrame):
+    if isinstance(object_to_download, pd.DataFrame):
         object_to_download = object_to_download.to_csv(index=False)
 
     # some strings <-> bytes conversions necessary here

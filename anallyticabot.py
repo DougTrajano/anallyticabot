@@ -12,6 +12,7 @@ from app.intents.discovery import *
 from app.intents.similarity import *
 from app.intents.watson_prediction import *
 from app.intents.stop_words import *
+from app.dialogs.dialog_flow import dialogflow_page
 
 parameters = load_parameters("properties/application.json")
 
@@ -24,6 +25,7 @@ if parameters["disable_streamlit_menu"] == True:
 app = MultiApp()
 
 app.add_app("Home", main_page)
+app.add_app("Dialogs - Session Flow", dialogflow_page, logged_page=True)
 app.add_app("Intents - Counterexamples", counterexamples_page, logged_page=True)
 app.add_app("Intents - Decomposition Analysis", decomposition_page, logged_page=True)
 app.add_app("Intents - Discovery", discovery_page, logged_page=True)
