@@ -8,10 +8,12 @@ Anallyticabot is free to use and is an open source project! 💙
 
 # Features
 
-- Counter examples management.
+- Counterexamples management.
 - Decomposition Analysis (2D chart for intents model)
+- Dialog Flow
 - Intents Discovery
 - Examples similarity
+- Stopwords identify
 - Watson predictions validation
 
 # Installation

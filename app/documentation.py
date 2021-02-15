@@ -6,7 +6,7 @@ def documentation_page(state):
     st.title("Documentation")
     
     st.markdown("""
-    Anallyticabot is a cloud service that offers products for designing, analyzing, and optimizing conversational experiences.
+    Anallyticabot is a simple data app that offers products for designing, analyzing, and optimizing conversational experiences.
 
     All Anallyticabot analysis are user-centered based. We provide a gentle introduction in each of them that can help you understand how them works and how them will help you.
 
