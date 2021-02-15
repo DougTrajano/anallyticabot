@@ -5,6 +5,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from tryagain import retries
 import datetime
 import pandas as pd
+import logging
 
 
 class WatsonAssistant:
@@ -17,6 +18,9 @@ class WatsonAssistant:
         - service_endpoint (str, required): The URL to service endpoint that you Watson Assistant are allocated.
         - default_skill_id (str, optional): The skill/worksapce id of your Watson Assistant.
         """
+
+        logging.info({"message": "Initialize WatsonAssistant object."})
+
         self.apikey = apikey
         self.version = "2020-04-01"
         self.service_endpoint = service_endpoint
@@ -35,6 +39,7 @@ class WatsonAssistant:
         Output:
         - Watson Assistant's service object.
         """
+
         authenticator = IAMAuthenticator(self.apikey)
         assistant = AssistantV1(version=self.version,
                                 authenticator=authenticator)
@@ -57,11 +62,15 @@ class WatsonAssistant:
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
+                logging.error({"message": "skill_id is missing."})
                 raise AttributeError("skill_id is missing.")
             else:
                 skill_id = self.default_skill_id
         else:
             self.default_skill_id = skill_id
+
+        logging.info(
+            {"message": "Getting workspace from Watson API.", "skill_id": skill_id})
 
         response = self.assistant.get_workspace(
             workspace_id=skill_id, export=True).get_result()
@@ -81,23 +90,30 @@ class WatsonAssistant:
 
         Output:
         - Dict with "success" indicating True or False and Watson Assistant payload: create_counterexample().
-        """         
+        """
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
+                logging.error({"message": "skill_id is missing."})
                 raise AttributeError("skill_id is missing.")
             else:
                 skill_id = self.default_skill_id
         else:
             self.default_skill_id = skill_id
 
+        logging.info({"message": "Adding counterexample to Watson Assistant.",
+                      "counterexample": txt, "skill_id": skill_id})
+
         try:
             response = self.assistant.create_counterexample(
                 workspace_id=skill_id, text=txt).get_result()
             response["success"] = True
-        except:
-            response = {"success": False}
-        return response
+        except Exception as error:
+            logging.error({"message": "Failed to add counterexample to Watson Assistant.",
+                           "exception": error, "counterexample": txt, "skill_id": skill_id})
+            response = {"success": False, "exception": error}
+        finally:
+            return response
 
     @retries(max_attempts=3, wait=1.0)
     def get_counterexamples(self, skill_id=None):
@@ -109,15 +125,19 @@ class WatsonAssistant:
 
         Output:
         - Dict with "success" indicating True or False and "counterexamples" with Watson Assistant's counterexamples.
-        """        
+        """
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
+                logging.error({"message": "skill_id is missing."})
                 raise AttributeError("skill_id is missing.")
             else:
                 skill_id = self.default_skill_id
         else:
             self.default_skill_id = skill_id
+
+        logging.info(
+            {"message": "Getting counterexamples from Watson Assistant.", "skill_id": skill_id})
 
         try:
             response = self.assistant.list_counterexamples(
@@ -125,8 +145,10 @@ class WatsonAssistant:
 
             counterexamples = [e["text"] for e in response["counterexamples"]]
             response = {"counterexamples": counterexamples, "success": True}
-        except:
-            response = {"success": False}
+        except Exception as error:
+            logging.error({"message": "Failed to get counterexamples from Watson Assistant.",
+                           "exception": error, "skill_id": skill_id})
+            response = {"success": False, "exception": error}
         finally:
             return response
 
@@ -145,18 +167,24 @@ class WatsonAssistant:
         # Parameters check
         if skill_id == None:
             if self.default_skill_id == None:
+                logging.error({"message": "skill_id is missing."})
                 raise AttributeError("skill_id is missing.")
             else:
                 skill_id = self.default_skill_id
         else:
             self.default_skill_id = skill_id
 
+        logging.info({"message": "Deleting counterexample from Watson Assistant.",
+                      "counterexample": txt, "skill_id": skill_id})
+
         try:
             response = self.assistant.delete_counterexample(
                 workspace_id=skill_id, text=txt).get_result()
             response["success"] = True
-        except:
-            response = {"success": False}
+        except Exception as error:
+            logging.error({"message": "Failed to delete counterexample from Watson Assistant.",
+                           "counterexample": txt, "skill_id": skill_id, "exception": error})
+            response = {"success": False, "exception": error}
         finally:
             return response
 
@@ -180,11 +208,17 @@ class WatsonAssistant:
         else:
             self.default_skill_id = skill_id
 
+        logging.info(
+            {"message": "Checking Watson Assistant connection.", "skill_id": skill_id})
+
         try:
             response = self.assistant.get_workspace(
                 workspace_id=skill_id, export=False).get_result()
-        except:
+        except Exception as error:
+            logging.error({"message": "Failed to connect to this Watson Assistant instance.",
+                           "exception": error, "skill_id": skill_id})
             response = {"status": "Not Available",
+                        "exception": error,
                         "message": "Failed to connect to this Watson Assistant instance."}
         finally:
             return response
@@ -210,9 +244,13 @@ class WatsonAssistant:
             self.default_skill_id = skill_id
 
         if not isinstance(message, str):
+            logging.error({"message": "message needs to be string."})
             raise ValueError("message needs to be string.")
         if len(message) < 1 or len(message) > 2048:
+            logging.error({"message": "message constraints: 1 ≤ length ≤ 2048"})
             raise ValueError("message constraints: 1 ≤ length ≤ 2048")
+
+        logging.info({"message": "Sending message to Watson Assistant.", "skill_id": skill_id, "message": message})
 
         return self.assistant.message(workspace_id=skill_id,
                                       input={"text": message},
@@ -228,6 +266,9 @@ class WatsonAssistant:
         Output:
         - A dict with "examples" list and "intents" list.
         """
+
+        logging.info({"message": "Getting intents from Watson Assistant."})
+
         if self.watson_workspace == None:
             self.get_workspace()
 
@@ -280,9 +321,11 @@ class WatsonAssistant:
         Output:
         - A list with logs requested.
         """
-        
+
         if skill_id == None:
             skill_id = self.default_skill_id
+
+        logging.info({"message": "Getting logs from Watson Assistant.", "skill_id": skill_id, "query": query, "sort": sort, "max_logs": max_logs})
 
         if query == None:
             # query for last 7 days
@@ -313,9 +356,11 @@ class WatsonAssistant:
                     else:
                         break
         except WatsonApiException:
+            logging.error({"message": "You've reached the rate limit of log api, refer to https://www.ibm.com/watson/developercloud/assistant/api/v1/curl.html?curl#list-logs for additional information."})
             raise Exception(
                 "You've reached the rate limit of log api, refer to https://www.ibm.com/watson/developercloud/assistant/api/v1/curl.html?curl#list-logs for additional information.")
         except Exception as error:
+            logging.error({"message": "Failed to get logs from Watson Assistant.", "exception": error, "skill_id": skill_id, "query": query})
             raise Exception(error)
         finally:
             self.watson_logs = logs

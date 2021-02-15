@@ -1,8 +1,12 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import unidecode
+import logging
 
 def get_stop_words(corpus, remove_numbers=False):
+
+    logging.info({"message": "Getting stopwords.", "remove_numbers": remove_numbers})
+
     if remove_numbers:
         corpus = remove_numbers_from_corpus(corpus)
 
@@ -17,6 +21,9 @@ def get_stop_words(corpus, remove_numbers=False):
     return df
 
 def remove_numbers_from_corpus(corpus):
+    
+    logging.info({"message": "Removing numbers from corpus."})
+
     new_corpus = []
     for txt in corpus:
         txt = ''.join([i for i in txt if not i.isnumeric()])
@@ -24,6 +31,9 @@ def remove_numbers_from_corpus(corpus):
     return new_corpus
 
 def words_count(corpus):
+
+    logging.info({"message": "Getting words count."})
+    
     word_freq = {}
     
     words = ' '

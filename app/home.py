@@ -1,7 +1,10 @@
 import streamlit as st
+import logging
 
 def main_page(state):
+    logging.info({"message": "Loading home page."})
     st.title("Anallyticabot")
+    
     st.write("""
     Unlock insights from data to create the right AI-powered conversational experiences for customer service.
     

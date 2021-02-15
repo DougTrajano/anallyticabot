@@ -1,13 +1,14 @@
-import streamlit as st
+import logging
 import pandas as pd
-import plotly.express as px
-
+import streamlit as st
 from app.helper_functions import *
 from src.intents.stop_words import *
 
 
 def stop_words_page(state):
+    logging.info({"message": "Loading Stopwords page."})
     st.title("Stop Words")
+    
     st.markdown("""
     Stop words usually refers to the most common words in a language, there is no single universal list of stop words used by all natural language processing tools.
     

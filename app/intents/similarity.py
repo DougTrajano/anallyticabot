@@ -1,11 +1,13 @@
+import logging
 import pandas as pd
-import datetime
 import streamlit as st
-from app.helper_functions import *
+from app.helper_functions import read_df, download_link
 
 
 def similarity_page(state):
+    logging.info({"message": "Loading Examples Similarity page."})
     st.title("Examples similarity")
+
     st.markdown("""
     Intents must have different examples for the same purpose.
 

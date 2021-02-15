@@ -1,8 +1,16 @@
+# This page uses open source components.
+# You can find the source code of their open source projects along with license information below.
+# We acknowledge and are grateful to these developers for their contributions to open source.
+#
+# Project: https://github.com/watson-developer-cloud/assistant-dialog-flow-analysis/
+# License: Apache 2.0 license.
+
 import json
+import logging
 import pandas as pd
-from conversation_analytics_toolkit import wa_assistant_skills
-from conversation_analytics_toolkit import transformation
 from conversation_analytics_toolkit import analysis
+from conversation_analytics_toolkit import transformation
+from conversation_analytics_toolkit import wa_assistant_skills
 
 _html_template = """
 <html>
@@ -745,24 +753,33 @@ _html_template = """
 </html>
 """
 
+
 def prepare_data(logs, skill_id, workspace):
+
+    logging.info(
+        {"message": "Preparing data for dialog flow.", "skill_id": skill_id})
+
     df_logs = pd.DataFrame(logs)
 
     assistant_skills = wa_assistant_skills.WA_Assistant_Skills()
     assistant_skills.add_skill(skill_id, workspace)
 
     df_logs_canonical = transformation.to_canonical_WA_v2(df_logs, assistant_skills,
-                                                            skill_id_field=None, include_nodes_visited_str_types=True,
-                                                            include_context=False)
+                                                          skill_id_field=None, include_nodes_visited_str_types=True,
+                                                          include_context=False)
 
     df_logs_to_analyze = df_logs_canonical.copy(deep=False)
 
     turn_based_path_flows = analysis.aggregate_flows(df_logs_to_analyze, mode="turn-based",
-                                                        on_column="turn_label", max_depth=400, trim_reroutes=False)
+                                                     on_column="turn_label", max_depth=400, trim_reroutes=False)
 
     return json.loads(turn_based_path_flows.to_json(orient='records'))
-    
+
+
 def generate_html_report(config, data):
+
+    logging.info({"message": "Generating HTML report for Dialog Flow."})
+    
     config = json.dumps(config)
     data = json.dumps(data)
 

@@ -1,28 +1,31 @@
 # Default libs
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.io as pio
-from src.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
-from sklearn.decomposition import PCA
-from sklearn.decomposition import TruncatedSVD
-from sklearn.manifold import TSNE
-import nltk
 import pandas as pd
 import numpy as np
-import spacy
+import logging
 
 SEED = 1993
 np.random.seed(SEED)
 
 # ML libs
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
+from sklearn.manifold import TSNE
+import nltk
+import spacy
+
+from src.nlp_utils.text_preprocessing import normalize_text, load_stopwords, apply_tfidf
 
 # Graph libs
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.io as pio
 
 # set default theme
 pio.templates.default = "seaborn"
 
 
 def decomposition_reduction(examples, intents, method="PCA"):
+    logging.info({"message": "Initializing decomposition reduction."})
     X = apply_tfidf(examples)
 
     if method.lower() == "TSNE":
@@ -59,6 +62,9 @@ def prepareDataIntents(df):
 
 class ExamplesDA():
     def __init__(self, examples, intents, decomposition_method="pca"):
+
+        logging.info({"message": "Instantiate ExamplesDA."})
+
         self.examples = examples
         self.intents = intents
         self.decomposition_method = decomposition_method
@@ -67,6 +73,7 @@ class ExamplesDA():
         self.fig = None
 
     def text_processing(self, stopwords=False, stopwords_file=None):
+        logging.info({"message": "Processing examples."})
         if stopwords:
             if isinstance(stopwords_file, str):
                 stopwords = load_stopwords(stopwords_file)
@@ -78,6 +85,7 @@ class ExamplesDA():
             example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
+        logging.info({"message": "Preparing data."})
         if isinstance(self.examples_processed, list):
             self.data = decomposition_reduction(
                 self.examples_processed, self.intents, method=self.decomposition_method)
@@ -91,6 +99,7 @@ class ExamplesDA():
         return self.data
 
     def generate_fig(self, title="Example - Decomposition Analysis"):
+        logging.info({"message": "Generating figure."})
         if not isinstance(self.data, pd.DataFrame):
             self.prepare_data()
 
@@ -135,12 +144,14 @@ class ExamplesDA():
         self.fig = fig
 
     def display(self):
+        logging.info({"message": "Displaying figure."})
         if self.fig == None:
             self.generate_fig()
 
         self.fig.show()
 
     def export_html(self, file_name="examples_analysis.html"):
+        logging.info({"message": "Exporting to HTML."})
         if self.fig == None:
             self.generate_fig()
 
@@ -149,6 +160,9 @@ class ExamplesDA():
 
 class IntentsDA():
     def __init__(self, examples, intents, decomposition_method="pca"):
+
+        logging.info({"message": "Instantiate IntentsDA."})
+
         self.examples = examples
         self.intents = intents
         self.decomposition_method = decomposition_method
@@ -157,6 +171,7 @@ class IntentsDA():
         self.fig = None
 
     def text_processing(self, stopwords=False, stopwords_file=None):
+        logging.info({"message": "Processing examples."})
         if stopwords:
             if isinstance(stopwords_file, str):
                 stopwords = load_stopwords(stopwords_file)
@@ -168,6 +183,7 @@ class IntentsDA():
             example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
+        logging.info({"message": "Preparing data."})
         if isinstance(self.examples_processed, list):
             examples = self.examples_processed
         else:
@@ -179,6 +195,7 @@ class IntentsDA():
         return self.data
 
     def generate_fig(self, title="Intents - Decomposition Analysis"):
+        logging.info({"message": "Generating figure."})
         if not isinstance(self.data, pd.DataFrame):
             self.prepare_data()
 
@@ -212,18 +229,16 @@ class IntentsDA():
             ))
 
         self.fig = fig
-        if False:
-            self.fig = px.scatter(data, x="x", y="y", hover_name="intent", hover_data=["examples_count"],
-                                  size="examples_count", color="intent", opacity=0.6,
-                                  size_max=10, title=title)
 
     def display(self):
+        logging.info({"message": "Displaying figure."})
         if self.fig == None:
             self.generate_fig()
 
         return self.fig.show()
 
     def export_html(self, file_name="intents_analysis.html"):
+        logging.info({"message": "Exporting to HTML."})
         if self.fig == None:
             self.generate_fig()
 

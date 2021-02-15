@@ -1,31 +1,34 @@
-import streamlit as st
-from src.helper_functions import *
+import logging
 
-from app.multi_app import *
-from app.home import *
-from app.settings import *
-from app.documentation import *
+logging.basicConfig(level=logging.INFO)
+                  
+logging.info({"message": "Anallyticabot started."})
 
-from app.intents.counter_examples import *
-from app.intents.decomposition_analysis import *
-from app.intents.discovery import *
-from app.intents.similarity import *
-from app.intents.watson_prediction import *
-from app.intents.stop_words import *
+from src.helper_functions import load_parameters
+
+# Dialogs page
 from app.dialogs.dialog_flow import dialogflow_page
 
+# Intents page
+from app.intents.stop_words import stop_words_page
+from app.intents.watson_prediction import watson_prediction_page
+from app.intents.similarity import similarity_page
+from app.intents.discovery import discovery_page
+from app.intents.decomposition_analysis import decomposition_page
+from app.intents.counter_examples import counterexamples_page
+
+# Others page
+from app.documentation import documentation_page
+from app.settings import settings_page
+from app.home import main_page
+from app.multi_app import MultiApp
+
 parameters = load_parameters("properties/application.json")
-
-st.set_page_config(page_title=parameters["page_title"], layout="wide",
-                        page_icon=parameters["page_icon"])
-
-if parameters["disable_streamlit_menu"] == True:
-    disable_menu()
 
 app = MultiApp()
 
 app.add_app("Home", main_page)
-app.add_app("Dialogs - Session Flow", dialogflow_page, logged_page=True)
+app.add_app("Dialogs - Dialog Flow", dialogflow_page, logged_page=True)
 app.add_app("Intents - Counterexamples", counterexamples_page, logged_page=True)
 app.add_app("Intents - Decomposition Analysis", decomposition_page, logged_page=True)
 app.add_app("Intents - Discovery", discovery_page, logged_page=True)
@@ -35,4 +38,4 @@ app.add_app("Intents - Watson Prediction", watson_prediction_page, logged_page=T
 app.add_app("Settings", settings_page)
 app.add_app("Documentation", documentation_page)
 
-app.run(title=parameters["page_title"], parameters=parameters)
+app.run(parameters=parameters)

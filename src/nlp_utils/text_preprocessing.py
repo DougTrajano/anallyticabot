@@ -1,11 +1,13 @@
 import nltk
 import string
 import unidecode
+import logging
 import spacy
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.pipeline import Pipeline
 
 def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
+    logging.info({"message": "Normalizing example.", "example": example})
     if nlp == None:
         nlp = spacy.load("pt_core_news_md")
         
@@ -37,6 +39,7 @@ def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
     return example
 
 def load_stopwords(file_name):
+    logging.info({"message": "Loading stopwords.", "file_name": file_name})
     with open(file_name) as file:
         stopwords = file.readlines()
 
@@ -44,6 +47,7 @@ def load_stopwords(file_name):
     return stopwords
 
 def apply_tfidf(examples):
+    logging.info({"message": "Applying TF-IDF.", "examples_count": len(examples)})
     pipeline = Pipeline([
         ('vect', CountVectorizer()),
         ('tfidf', TfidfTransformer()),

@@ -1,7 +1,9 @@
 import streamlit as st
 import datetime
+import logging
 
 def dialogflow_page(state):
+    logging.info({"message": "Loading Dialog Flow page."})
     st.title("Dialog Flow")
 
     col1, col2 = st.beta_columns(2)
@@ -41,21 +43,28 @@ def dialogflow_page(state):
         from src.connectors.watson_assistant import WatsonAssistant
         from app.helper_functions import download_link
 
-        wa = WatsonAssistant(apikey=state.watson_args["apikey"],
-                             service_endpoint=state.watson_args["endpoint"],
-                             default_skill_id=state.watson_args["skill_id"])
-        
-        workspace = wa.get_workspace()
+        try:
+            wa = WatsonAssistant(apikey=state.watson_args["apikey"],
+                                service_endpoint=state.watson_args["endpoint"],
+                                default_skill_id=state.watson_args["skill_id"])
+            
+            workspace = wa.get_workspace()
 
-        query_logs = wa.define_query_by_date(logs_date[0], logs_date[1])
-        logs = wa.get_logs(query=query_logs)
-
+            query_logs = wa.define_query_by_date(logs_date[0], logs_date[1])
+            logs = wa.get_logs(query=query_logs)
+        except Exception as error:
+            logging.error({"message": "Failed to fetch Watson Assistant logs.", "exception": error})
+            st.error("Failed to fetch Watson Assistant logs.")
+            
         skill_id = state.watson_args["skill_id"]
         
-        data = prepare_data(logs, skill_id, workspace)
-        html_report = generate_html_report(config, data)
-
-        result = download_link(html_report, 'dialog_flow.html', 'Download Dialog Flow report')
-        st.markdown(result, unsafe_allow_html=True)
+        try:
+            data = prepare_data(logs, skill_id, workspace)
+            html_report = generate_html_report(config, data)
+            result = download_link(html_report, 'dialog_flow.html', 'Download Dialog Flow report')
+            st.markdown(result, unsafe_allow_html=True)
+        except Exception as error:
+            logging.error({"message": "Failed to generate Dialog Flow report.", "exception": error})
+            st.error("Failed to generate Dialog Flow report.")       
 
     state.sync()

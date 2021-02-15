@@ -1,29 +1,38 @@
+import base64
+import logging
+import pandas as pd
 import streamlit as st
 from src.connectors.watson_assistant import WatsonAssistant
-import pandas as pd
-import base64
+
 
 def test_watson_connection(skill_id, apikey, service_endpoint):
+
+    logging.info({"message": "Testing Watson Assistant connection.",
+                  "skill_id": skill_id, "apikey": apikey, "service_endpoin": service_endpoint})
+
     wa = WatsonAssistant(apikey=apikey, service_endpoint=service_endpoint,
-                            default_skill_id=skill_id)
+                         default_skill_id=skill_id)
 
     return wa.check_connection()
-            
+
+
 def not_connected_page(state):
     st.error("Parece que você não está conectado em uma skill do Watson Assistant.")
     st.stop()
-    
+
+
 @st.cache(allow_output_mutation=True)
 def try_read_df(f, cols_names, file_type="csv"):
     try:
         if file_type == "csv":
             data = pd.read_csv(f, names=cols_names)
         else:
-            data =  pd.read_excel(f, names=cols_names)
+            data = pd.read_excel(f, names=cols_names)
     except:
         data = None
     finally:
         return data
+
 
 def read_df(f, cols_names):
     # csv
@@ -34,13 +43,16 @@ def read_df(f, cols_names):
 
     if not isinstance(df, pd.DataFrame):
         df == None
-        st.error('Falha ao carregar arquivo. Veja a sessão "Enviando arquivos" na documentação.')
+        st.error(
+            'Falha ao carregar arquivo. Veja a sessão "Enviando arquivos" na documentação.')
         st.stop()
     return df
+
 
 def check_df(df):
     if len(df) == 0:
         st.stop()
+
 
 def download_link(object_to_download, download_filename, download_link_text):
     """
@@ -62,6 +74,7 @@ def download_link(object_to_download, download_filename, download_link_text):
     b64 = base64.b64encode(object_to_download.encode()).decode()
 
     return f'<a href="data:file/txt;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
+
 
 def check_watson(state):
     watson_connected = False

@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import streamlit as st
 from app.helper_functions import *
@@ -5,6 +6,9 @@ from app.helper_functions import *
 
 @st.cache
 def prepare_logs(logs):
+
+    logging.info({"message": "Prearing logs."})
+
     lst = []
     for log in logs:
         try:
@@ -19,7 +23,9 @@ def prepare_logs(logs):
 
 
 def discovery_page(state):
+    logging.info({"message": "Loading Intents Discovery page."})
     st.title("Intents Discovery")
+    
     st.markdown("""
     When you start to develop your chatbot or even you are developing more intents, you will need to analyze user messages to map the new intents.
 
@@ -70,7 +76,8 @@ def discovery_page(state):
             if len(logs) > 0:
                 state.discovery_data = pd.DataFrame(prepare_logs(logs))
             else:
-                st.error("It seems that this skill has no logs available.")
+                logging.error({"message": "It's seems that this skill has no logs available."})
+                st.error("It's seems that this skill has no logs available.")
                 st.stop()
 
     if isinstance(state.discovery_data, pd.DataFrame):

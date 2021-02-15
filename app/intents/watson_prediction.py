@@ -1,11 +1,14 @@
-import streamlit as st
+import logging
 import pandas as pd
-from app.helper_functions import *
-from src.intents.watson_prediction import *
+import streamlit as st
+from app.helper_functions import read_df, download_link
+from src.intents.watson_prediction import eval_intent_col, run_wa_preds, cache_df
 
 
 def watson_prediction_page(state):
+    logging.info({"message": "Loading Watson Prediction page."})
     st.title("Watson Prediction")
+
     st.markdown("""
     In this page you can upload a file with examples to be evaluated by your Watson Assistant skill.
 
@@ -38,13 +41,15 @@ def watson_prediction_page(state):
             state.watson_prediction = data.copy()
     else:
         state.watson_prediction = None
-        
+
     # RUN ANALYSIS
     if isinstance(state.watson_prediction, pd.DataFrame):
         if len(state.watson_prediction) >= 500:
-            st.warning("Caution! This analysis will make several API calls and will incur costs. It will make {} API calls.".format(
-                len(state.watson_prediction["examples"].tolist())))
-        
+            warning_msg = "Caution! This analysis will make several API calls and will incur costs. It will make {} API calls.".format(
+                len(state.watson_prediction["examples"].tolist()))
+            logging.warning({"message": warning_msg})
+            st.warning(warning_msg)
+
         if st.button("Run Analysis"):
             if "watson_intent_0" not in state.watson_prediction.columns:
                 st.write("Getting Watson predictions.")

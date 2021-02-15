@@ -1,10 +1,12 @@
 import time
-import pandas as pd
 import streamlit as st
+import logging
 from app.helper_functions import *
 
 def counterexamples_page(state):
+    logging.info({"message": "Loading counterexamples page."})
     st.title("Counterexamples")
+
     st.markdown("""
     Counterexamples in Watson Assistant are used when we want to avoid answer incorrectly for some user inputs.
 
@@ -26,6 +28,7 @@ def counterexamples_page(state):
             st.success("Counterexample added.")
             time.sleep(state.alert_timeout)
         else:
+            logging.error({"message": "Failed to add the counterexample."})
             st.error("Failed to add the counterexample.")
             time.sleep(state.alert_timeout)
 
@@ -49,8 +52,10 @@ def counterexamples_page(state):
                     st.success("Counterexample deleted.")
                     time.sleep(state.alert_timeout)
                 else:
+                    logging.error({"message": "Failed to delete counterexample."})
                     st.error("Failed to delete counterexample.")
                     time.sleep(state.alert_timeout)
+                    
                 raise st.script_runner.RerunException(st.script_request_queue.RerunData(None))
     else:
         st.markdown(

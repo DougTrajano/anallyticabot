@@ -1,10 +1,12 @@
-import pandas as pd
+import logging
 import streamlit as st
 from app.helper_functions import *
 
 
 def decomposition_page(state):
+    logging.info({"message": "Loading Decomposition Analysis."})
     st.title("Decomposition Analysis")
+    
     st.markdown("""
     When we add a new intent to the model, we want to know how it will fit with our old intents.
 

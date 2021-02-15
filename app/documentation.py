@@ -1,7 +1,10 @@
 import streamlit as st
+import logging
 
 def documentation_page(state):
+    logging.info({"message": "Loading documentation page."})
     st.title("Documentation")
+    
     st.markdown("""
     Anallyticabot is a cloud service that offers products for designing, analyzing, and optimizing conversational experiences.
 
