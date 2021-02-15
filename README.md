@@ -1,6 +1,6 @@
 ![](images/anallyticabot_logo.png)
 
-**[Anallyticabot](https://share.streamlit.io/dougtrajano/anallyticabot/anallyticabot.py)** unlock insights from your data to create the right AI-powered conversational experiences.
+**Anallyticabot** unlock insights from your data to create the right AI-powered conversational experiences.
 
 Anallyticabot is free to use and is an open source project! 💙
 
@@ -20,7 +20,7 @@ Anallyticabot is free to use and is an open source project! 💙
 
 ## Docker
 
-To run Anallyticabot via Docker, just type
+To run Anallyticabot via Docker, just type:
 
 ```
 docker run --name anallyticabot dougtrajano/anallyticabot
@@ -28,7 +28,7 @@ docker run --name anallyticabot dougtrajano/anallyticabot
 
 ## Locally
 
-To run Anallyticabot locally, just type
+To run Anallyticabot locally, just type:
 
 ```
 git clone https://github.com/DougTrajano/anallyticabot.git
