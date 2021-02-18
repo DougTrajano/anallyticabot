@@ -31,7 +31,6 @@ def main_page(state):
     
     st.write("""
     ## Measure
-    > (in development)
 
     The reports tracks bot health metrics (e.g., intents quality, conflicts), measure retention by date or intent.
     """)

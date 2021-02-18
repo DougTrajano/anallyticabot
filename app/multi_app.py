@@ -68,10 +68,17 @@ class MultiApp:
             for key in parameters.keys():
                 state[key] = parameters[key]
 
-        st.sidebar.image("images/anallyticabot_logo.png",
-                         use_column_width=True)
+        st.sidebar.markdown("""
+        <img src="https://raw.githubusercontent.com/DougTrajano/anallyticabot/master/images/anallyticabot_logo.png" style="{ width: 200px; margin-left: auto; margin-right: auto; display: block; text-align: center; }" alt="With Watson"/>
+        """, unsafe_allow_html=True)
+        
         st.sidebar.markdown(
             '<img src="https://i.ibb.co/yqsMMdm/with-watson.png" style="{ width: 100px; margin-left: auto; margin-right: auto; display: block; text-align: center; }" alt="With Watson">', unsafe_allow_html=True)
+
+        if state.watson_args is not None:
+            if state.watson_args.get("skill_name") is not None:
+                st.sidebar.write(' ')
+                st.sidebar.write("**Skill**", state.watson_args["skill_name"])
 
         if check_watson(state) == False:
             self.apps = [app for app in self.apps if app["logged_page"] != True]

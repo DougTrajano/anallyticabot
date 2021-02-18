@@ -1,5 +1,5 @@
 {
-    "alert_timeout": 0.5,
+    "alert_timeout": 0.3,
     "disable_streamlit_menu": true,
     "page_title": "Anallyticabot",
     "page_icon": "images/icon.ico"

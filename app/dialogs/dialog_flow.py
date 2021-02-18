@@ -29,14 +29,14 @@ def dialogflow_page(state):
         'Max children in node', value=6)
     config['sortByAttribute'] = st.selectbox('Sort by attribute', options=(
         'flowRatio', 'dropped_offRatio', 'flows', 'dropped_off', 'rerouted'))
-            
-    with st.beta_expander('Advanced Settings'):
+
+    end_date = datetime.datetime.now()
+    start_date = end_date - datetime.timedelta(days=7)
+    logs_date = st.date_input('Logs date', value=(start_date, end_date))
+                
+    with st.beta_expander('Advanced options'):
         config['nodeWidth'] = st.number_input('Node width', value=250)
         config['linkWidth'] = st.number_input('Link width', value=400)
-
-        end_date = datetime.datetime.now()
-        start_date = end_date - datetime.timedelta(days=7)
-        logs_date = st.date_input('Logs date', value=(start_date, end_date))
         
     if st.button("Generate report"):
         from src.dialogs.dialog_flow import prepare_data, generate_html_report

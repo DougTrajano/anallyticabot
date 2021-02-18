@@ -1,12 +1,12 @@
-import streamlit as st
-from app.helper_functions import *
-from io import StringIO
-import numpy as np
-import pandas as pd
 import time
+import logging
+import streamlit as st
+import pandas as pd
+from app.helper_functions import test_watson_connection
+
 
 def settings_page(state):
-
+    logging.info({"message": "Loading Settings page."})
     st.title(":wrench: Settings")
 
     if not isinstance(state.watson_args, dict):
@@ -30,7 +30,7 @@ def settings_page(state):
     if isinstance(state.watson_args, dict):
         if state.watson_args.get("connected") == True:
             desconnect_button(state)
-
+    
     st.write("""
     ## NLP - Natural Language Processing
     
@@ -40,8 +40,10 @@ def settings_page(state):
     st.write("""
     ### Stopwords
     Stop words are words which are filtered out before or after processing of natural language data (text).
+
+    You can use "Intents - Stop Words" page to get a list based on your context.
     """)
-    
+
     uploaded_file = st.file_uploader(
         "Send a list of stopwords", type=["txt"])
     if uploaded_file is not None:
@@ -49,14 +51,11 @@ def settings_page(state):
         if len(df) > 0:
             state.stopwords = df["stopwords"].tolist()
         st.write("Stopwords count: {}".format(len(state.stopwords)))
-    
 
     state.sync()
 
 
 def watson_connected(state):
-    state.watson_args["skill_name"] = st.text_input(
-        "Chatbot name", state.watson_args["skill_name"])
     state.watson_args["skill_id"] = st.text_input(
         "Skill ID", state.watson_args["skill_id"])
     state.watson_args["apikey"] = st.text_input(
@@ -66,7 +65,6 @@ def watson_connected(state):
 
 
 def watson_not_connected(state):
-    state.watson_args["skill_name"] = st.text_input("Chatbot name")
     state.watson_args["skill_id"] = st.text_input("Skill ID")
     state.watson_args["apikey"] = st.text_input("API key")
     state.watson_args["endpoint"] = st.text_input(
@@ -76,27 +74,27 @@ def watson_not_connected(state):
 def connect_button(state):
     watson_check = None
     if st.button("Connect"):
-        watson_check = test_watson_connection(
-            state.watson_args["skill_id"], state.watson_args["apikey"], state.watson_args["endpoint"])
+        watson_check = test_watson_connection(state.watson_args["skill_id"],
+                                              state.watson_args["apikey"], state.watson_args["endpoint"])
         if isinstance(watson_check, dict):
             if watson_check["status"] == "Not Available":
                 st.error("Fails to connect with Watson Assistant.")
                 state.watson_args["connected"] = False
                 state.watson_args["language"] = watson_check["language"]
-                if state.watson_args["skill_name"] == "":
-                    state.watson_args["skill_name"] = watson_check["name"]
-                time.sleep(0.5)
+                time.sleep(state.alert_timeout)
             else:
                 st.success("Watson Assistant connected.")
                 state.watson_args["connected"] = True
-                time.sleep(0.3)
+                state.watson_args["skill_name"] = watson_check["name"]
+                time.sleep(state.alert_timeout)
+
 
 def desconnect_button(state):
     if st.button("Disconnect"):
         if isinstance(state.watson_args, dict):
             state.watson_args = None
             st.success("Watson Assistant has been disconnected.")
-            time.sleep(0.5)
+            time.sleep(state.alert_timeout)
         else:
             st.error("No Watson Assistant skills were connected.")
-            time.sleep(0.5)
+            time.sleep(state.alert_timeout)
