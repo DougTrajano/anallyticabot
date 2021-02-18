@@ -74,19 +74,20 @@ def watson_not_connected(state):
 def connect_button(state):
     watson_check = None
     if st.button("Connect"):
-        watson_check = test_watson_connection(state.watson_args["skill_id"],
-                                              state.watson_args["apikey"], state.watson_args["endpoint"])
-        if isinstance(watson_check, dict):
-            if watson_check["status"] == "Not Available":
-                st.error("Fails to connect with Watson Assistant.")
-                state.watson_args["connected"] = False
-                state.watson_args["language"] = watson_check["language"]
-                time.sleep(state.alert_timeout)
-            else:
-                st.success("Watson Assistant connected.")
-                state.watson_args["connected"] = True
-                state.watson_args["skill_name"] = watson_check["name"]
-                time.sleep(state.alert_timeout)
+        with st.spinner("Connecting"):
+            watson_check = test_watson_connection(state.watson_args["skill_id"],
+                                                state.watson_args["apikey"], state.watson_args["endpoint"])
+            if isinstance(watson_check, dict):
+                if watson_check["status"] == "Not Available":
+                    st.error("Fails to connect with Watson Assistant.")
+                    state.watson_args["connected"] = False
+                    state.watson_args["language"] = watson_check["language"]
+                    time.sleep(state.alert_timeout)
+                else:
+                    st.success("Watson Assistant connected.")
+                    state.watson_args["connected"] = True
+                    state.watson_args["skill_name"] = watson_check["name"]
+                    time.sleep(state.alert_timeout)
 
 
 def desconnect_button(state):

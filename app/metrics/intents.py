@@ -14,23 +14,25 @@ def intents_metrics_page(state):
 
     end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=7)
-    args['logs_date'] = st.date_input('Logs date', value=(start_date, end_date))
-    
+
+    st.subheader("Parameters")
+    col1, col2 = st.beta_columns(2)
+    args['logs_date'] = col1.date_input('Logs date', value=(start_date, end_date))
+    args['Date'] = col2.selectbox('Datetime variable', ('request_timestamp', 'response_timestamp'))
+
     args['threshold'] = st.slider('Threshold', min_value=0.01, max_value=1.0, value=(0.6, 1.0), step=0.01)
 
-    with st.beta_expander("Advanced options"):
-        args['Date'] = st.selectbox('Datetime variable', ('request_timestamp', 'response_timestamp'))
-
     if st.button("Get logs"):
-        from src.metrics.conversation import logs_to_dataframe
-        from src.connectors.watson_assistant import WatsonAssistant
-        wa = WatsonAssistant(apikey=state.watson_args["apikey"],
-                                service_endpoint=state.watson_args["endpoint"],
-                                default_skill_id=state.watson_args["skill_id"])
-        
-        query_logs = wa.define_query_by_date(args['logs_date'][0], args['logs_date'][1])
-        logs = wa.get_logs(query=query_logs)
-        state.logs = logs_to_dataframe(state.logs, args['Date'])
+        with st.spinner("Getting logs..."):
+            from src.metrics.conversation import logs_to_dataframe
+            from src.connectors.watson_assistant import WatsonAssistant
+            wa = WatsonAssistant(apikey=state.watson_args["apikey"],
+                                    service_endpoint=state.watson_args["endpoint"],
+                                    default_skill_id=state.watson_args["skill_id"])
+            
+            query_logs = wa.define_query_by_date(args['logs_date'][0], args['logs_date'][1])
+            logs = wa.get_logs(query=query_logs)
+            state.logs = logs_to_dataframe(logs, args['Date'])
 
     if state.logs is not None:
         from src.metrics.intents import gen_plotly_intents, filter_df

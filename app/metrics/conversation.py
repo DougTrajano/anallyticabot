@@ -12,27 +12,30 @@ def conversation_metrics_page(state):
     You need to select a date range to get logs.
     """)
 
+    st.subheader("Parameters")
+    col1, col2 = st.beta_columns(2)
+
+    args = {}
+
     end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=7)
 
-    args = {}
-    args['logs_date'] = st.date_input('Logs date', value=(start_date, end_date))
-    
-    with st.beta_expander("Advanced options"):
-        args['Sessions'] = st.text_input('Conversation id', value='response.context.conversation_id')
-        args['Active users'] = st.text_input('User variable', value='response.context.global.system.user_id')
-        args['Date'] = st.selectbox('Datetime variable', ('request_timestamp', 'response_timestamp'))
+    args['logs_date'] = col1.date_input('Logs date', value=(start_date, end_date))
+    args['Date'] = col1.selectbox('Datetime variable', ('request_timestamp', 'response_timestamp'))    
+    args['Sessions'] = col2.text_input('Conversation id', value='response.context.conversation_id')
+    args['Active users'] = col2.text_input('User variable', value='response.context.global.system.user_id')
 
     if st.button("Get logs"):
-        from src.metrics.conversation import logs_to_dataframe
-        from src.connectors.watson_assistant import WatsonAssistant
-        wa = WatsonAssistant(apikey=state.watson_args["apikey"],
-                                service_endpoint=state.watson_args["endpoint"],
-                                default_skill_id=state.watson_args["skill_id"])
-        
-        query_logs = wa.define_query_by_date(args['logs_date'][0], args['logs_date'][1])
-        logs = wa.get_logs(query=query_logs)
-        state.logs = logs_to_dataframe(state.logs, args['Date'])
+        with st.spinner("Getting logs..."):
+            from src.metrics.conversation import logs_to_dataframe
+            from src.connectors.watson_assistant import WatsonAssistant
+            wa = WatsonAssistant(apikey=state.watson_args["apikey"],
+                                    service_endpoint=state.watson_args["endpoint"],
+                                    default_skill_id=state.watson_args["skill_id"])
+            
+            query_logs = wa.define_query_by_date(args['logs_date'][0], args['logs_date'][1])
+            logs = wa.get_logs(query=query_logs)
+            state.logs = logs_to_dataframe(logs, args['Date'])
 
     if state.logs is not None:
         from src.metrics.conversation import get_metrics, gen_plotly_datetime

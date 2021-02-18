@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 import logging
 
+
 def dialogflow_page(state):
     logging.info({"message": "Loading Dialog Flow page."})
     st.title("Dialog Flow")
@@ -22,49 +23,55 @@ def dialogflow_page(state):
     else:
         title_default = 'Dialog Session'
 
-    config['title'] = st.text_input('Title', value=title_default)
-
-    config['commonRootPathName'] = config['title']
-    config['maxChildrenInNode'] = st.number_input(
-        'Max children in node', value=6)
-    config['sortByAttribute'] = st.selectbox('Sort by attribute', options=(
-        'flowRatio', 'dropped_offRatio', 'flows', 'dropped_off', 'rerouted'))
-
     end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=7)
-    logs_date = st.date_input('Logs date', value=(start_date, end_date))
-                
-    with st.beta_expander('Advanced options'):
-        config['nodeWidth'] = st.number_input('Node width', value=250)
-        config['linkWidth'] = st.number_input('Link width', value=400)
-        
+
+    col_1, col_2 = st.beta_columns(2)
+    config['title'] = col_1.text_input('Title', value=title_default)
+    config['commonRootPathName'] = config['title']
+    logs_date = col_2.date_input(
+        'Logs date range', value=(start_date, end_date))
+
+    col_1, col_2, col_3, col_4 = st.beta_columns(4)
+    config['maxChildrenInNode'] = col_1.number_input('Max children in node', value=6)
+
+    config['sortByAttribute'] = col_2.selectbox('Sort by attribute',
+                                                options=('flowRatio', 'dropped_offRatio', 'flows', 'dropped_off', 'rerouted'))
+
+    config['nodeWidth'] = col_3.number_input('Node width', value=250, step=10)
+    config['linkWidth'] = col_4.number_input('Link width', value=400, step=10)
+
     if st.button("Generate report"):
-        from src.dialogs.dialog_flow import prepare_data, generate_html_report
-        from src.connectors.watson_assistant import WatsonAssistant
-        from app.helper_functions import download_link
+        with st.spinner('Processing data...'):
+            from src.dialogs.dialog_flow import prepare_data, generate_html_report
+            from src.connectors.watson_assistant import WatsonAssistant
+            from app.helper_functions import download_link
 
-        try:
-            wa = WatsonAssistant(apikey=state.watson_args["apikey"],
-                                service_endpoint=state.watson_args["endpoint"],
-                                default_skill_id=state.watson_args["skill_id"])
-            
-            workspace = wa.get_workspace()
+            try:
+                wa = WatsonAssistant(apikey=state.watson_args["apikey"],
+                                    service_endpoint=state.watson_args["endpoint"],
+                                    default_skill_id=state.watson_args["skill_id"])
 
-            query_logs = wa.define_query_by_date(logs_date[0], logs_date[1])
-            logs = wa.get_logs(query=query_logs)
-        except Exception as error:
-            logging.error({"message": "Failed to fetch Watson Assistant logs.", "exception": error})
-            st.error("Failed to fetch Watson Assistant logs.")
-            
-        skill_id = state.watson_args["skill_id"]
-        
-        try:
-            data = prepare_data(logs, skill_id, workspace)
-            html_report = generate_html_report(config, data)
-            result = download_link(html_report, 'dialog_flow.html', 'Download Dialog Flow report')
-            st.markdown(result, unsafe_allow_html=True)
-        except Exception as error:
-            logging.error({"message": "Failed to generate Dialog Flow report.", "exception": error})
-            st.error("Failed to generate Dialog Flow report.")       
+                workspace = wa.get_workspace()
+
+                query_logs = wa.define_query_by_date(logs_date[0], logs_date[1])
+                logs = wa.get_logs(query=query_logs)
+            except Exception as error:
+                logging.error(
+                    {"message": "Failed to fetch Watson Assistant logs.", "exception": error})
+                st.error("Failed to fetch Watson Assistant logs.")
+
+            skill_id = state.watson_args["skill_id"]
+
+            try:
+                data = prepare_data(logs, skill_id, workspace)
+                html_report = generate_html_report(config, data)
+                result = download_link(
+                    html_report, 'dialog_flow.html', 'Download Dialog Flow report')
+                st.markdown(result, unsafe_allow_html=True)
+            except Exception as error:
+                logging.error(
+                    {"message": "Failed to generate Dialog Flow report.", "exception": error})
+                st.error("Failed to generate Dialog Flow report.")
 
     state.sync()
