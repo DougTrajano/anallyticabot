@@ -23,14 +23,39 @@ def settings_page(state):
         # Form with default values
         watson_connected(state)
 
-    # Connect button
-    connect_button(state)
 
-    # Desconnect button
+    col1, col2 = st.beta_columns(2)
+
+    # Connect button
+    if col1.button("Connect"):
+        watson_check = None
+        with st.spinner("Connecting"):
+            watson_check = test_watson_connection(state.watson_args["skill_id"],
+                                                  state.watson_args["apikey"], state.watson_args["endpoint"])
+            if isinstance(watson_check, dict):
+                if watson_check["status"] == "Not Available":
+                    st.error("Fails to connect with Watson Assistant.")
+                    state.watson_args["connected"] = False
+                    state.watson_args["language"] = watson_check["language"]
+                    time.sleep(state.alert_timeout)
+                else:
+                    st.success("Watson Assistant connected.")
+                    state.watson_args["connected"] = True
+                    state.watson_args["skill_name"] = watson_check["name"]
+                    time.sleep(state.alert_timeout)
+
+    # Disconnect button
     if isinstance(state.watson_args, dict):
         if state.watson_args.get("connected") == True:
-            desconnect_button(state)
-    
+            if col2.button("Disconnect"):
+                if isinstance(state.watson_args, dict):
+                    state.watson_args = None
+                    st.success("Watson Assistant has been disconnected.")
+                    time.sleep(state.alert_timeout)
+                else:
+                    st.error("No Watson Assistant skills were connected.")
+                    time.sleep(state.alert_timeout)
+
     st.write("""
     ## NLP - Natural Language Processing
     
@@ -69,33 +94,3 @@ def watson_not_connected(state):
     state.watson_args["apikey"] = st.text_input("API key")
     state.watson_args["endpoint"] = st.text_input(
         "Region", "https://api.us-south.assistant.watson.cloud.ibm.com")
-
-
-def connect_button(state):
-    watson_check = None
-    if st.button("Connect"):
-        with st.spinner("Connecting"):
-            watson_check = test_watson_connection(state.watson_args["skill_id"],
-                                                state.watson_args["apikey"], state.watson_args["endpoint"])
-            if isinstance(watson_check, dict):
-                if watson_check["status"] == "Not Available":
-                    st.error("Fails to connect with Watson Assistant.")
-                    state.watson_args["connected"] = False
-                    state.watson_args["language"] = watson_check["language"]
-                    time.sleep(state.alert_timeout)
-                else:
-                    st.success("Watson Assistant connected.")
-                    state.watson_args["connected"] = True
-                    state.watson_args["skill_name"] = watson_check["name"]
-                    time.sleep(state.alert_timeout)
-
-
-def desconnect_button(state):
-    if st.button("Disconnect"):
-        if isinstance(state.watson_args, dict):
-            state.watson_args = None
-            st.success("Watson Assistant has been disconnected.")
-            time.sleep(state.alert_timeout)
-        else:
-            st.error("No Watson Assistant skills were connected.")
-            time.sleep(state.alert_timeout)

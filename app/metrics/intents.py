@@ -4,7 +4,7 @@ import datetime
 
 def intents_metrics_page(state):
     logging.info({"message": "Loading Metrics - Intents page."})
-    st.title("Metrics - Intents")
+    st.title(":bar_chart: Metrics - Intents")
     st.markdown("""
     In this page you can generate intents-based metrics for your Watson Assistant.
 

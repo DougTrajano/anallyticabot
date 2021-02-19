@@ -4,7 +4,7 @@ import streamlit as st
 
 def conversation_metrics_page(state):
     logging.info({"message": "Loading Metrics - Conversations page."})
-    st.title("Metrics - Conversations")
+    st.title(":bar_chart: Metrics - Conversations")
 
     st.markdown("""
     In this page you can generate conversation-based metrics for your Watson Assistant.
