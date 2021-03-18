@@ -7,7 +7,7 @@ numpy==1.20.1
 wordcloud==1.8.1
 tryagain==1.0
 Unidecode==1.2.0
-streamlit==0.76.0
+streamlit==0.79.0
 ibm_cloud_sdk_core==3.5.2
 scikit_learn==0.24.1
 conversation_analytics_toolkit==1.6.1

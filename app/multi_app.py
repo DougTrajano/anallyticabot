@@ -5,7 +5,6 @@ from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
 from app.helper_functions import check_watson
 
-
 class MultiApp:
     """Framework for combining multiple streamlit applications.
     Usage:
