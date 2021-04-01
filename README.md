@@ -44,3 +44,5 @@ streamlit run anallyticabot.py
 # License
 
 See [LICENSE](LICENSE) for details.
+
+<a href="https://www.buymeacoffee.com/dougtrajano" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="180" height="50" ></a>
