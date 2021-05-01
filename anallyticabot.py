@@ -1,10 +1,9 @@
-import logging
+from src.helper_functions import load_parameters, setup_logger
 
-logging.basicConfig(level=logging.INFO)
-                  
-logging.info({"message": "Anallyticabot started."})
+logger = setup_logger()
+            
+logger.info({"message": "Anallyticabot started."})
 
-from src.helper_functions import load_parameters
 
 # Dialogs page
 from app.dialogs.dialog_flow import dialogflow_page
