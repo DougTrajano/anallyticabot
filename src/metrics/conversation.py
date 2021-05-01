@@ -1,8 +1,10 @@
-import logging
 import pandas as pd
 import streamlit as st
 import plotly_express as px
-from src.helper_functions import flatten
+from src.helper_functions import flatten, setup_logger
+
+logger = setup_logger()
+
 
 def logs_to_dataframe(logs, datetime_var):
     lst = []
@@ -27,7 +29,7 @@ def get_metrics(df, args):
         metrics['sessions_count'] = len(df[args['Sessions']].unique())
     except Exception as error:
         metrics['sessions_count'] = None
-        logging.error({"message": "Failed to get session counts.", "exception": error})
+        logger.error({"message": "Failed to get session counts.", "exception": error})
         st.error("Failed to get session counts.")
 
     # Messages count
@@ -35,7 +37,7 @@ def get_metrics(df, args):
         metrics["messages_count"] = len(df)
     except Exception as error:
         metrics["messages_count"] = None
-        logging.error({"message": "Failed to get messages count.", "exception": error})
+        logger.error({"message": "Failed to get messages count.", "exception": error})
         st.error("Failed to get messages count.")
 
     # Avg messages
@@ -44,7 +46,7 @@ def get_metrics(df, args):
         metrics['avg_messages'] = round(metrics['avg_messages'], 1)
     except Exception as error:
         metrics['avg_messages'] = None
-        logging.error({"message": "Failed to get average messages.", "exception": error})
+        logger.error({"message": "Failed to get average messages.", "exception": error})
         st.error("Failed to get average messages.")
 
     # Active users
@@ -52,7 +54,7 @@ def get_metrics(df, args):
         metrics['active_users'] = len(df[args['Active users']].unique())
     except Exception as error:
         metrics['active_users'] = None
-        logging.error({"message": "Failed to get active users. Please, check User variable.", "exception": error})
+        logger.error({"message": "Failed to get active users. Please, check User variable.", "exception": error})
         st.error('Failed to get active users. Please, check "User variable" on advanced options.')
 
     return metrics

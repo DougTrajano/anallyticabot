@@ -1,11 +1,12 @@
-import logging
 import pandas as pd
 import streamlit as st
 from app.helper_functions import read_df, download_link
+from src.helper_functions import setup_logger
 
+logger = setup_logger()
 
 def similarity_page(state):
-    logging.info({"message": "Loading Examples Similarity page."})
+    logger.info({"message": "Loading Examples Similarity page."})
     st.title("Examples similarity")
 
     st.markdown("""

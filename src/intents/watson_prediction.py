@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
-import logging
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
+
 from src.connectors.watson_assistant import WatsonAssistant
 
 
@@ -33,7 +36,7 @@ def run_wa_preds(df, watson_apikey, watson_endpoint, watson_skill):
     DataFrame with the same df's columns and more ...
     """
 
-    logging.info({"message": "Applying Watson Assistant predictings."})
+    logger.info({"message": "Applying Watson Assistant predictings."})
 
     wa = WatsonAssistant(apikey=watson_apikey,
                          service_endpoint=watson_endpoint,
@@ -85,7 +88,7 @@ def send_message(data, message_key, wa):
     - Formatted output with user data + watson data.
     """
 
-    logging.info({"message": "Sending message to Watson Assistant."})
+    logger.info({"message": "Sending message to Watson Assistant."})
     
     watson_data = wa.send_message(data[message_key])
     result = format_output(data, watson_data)

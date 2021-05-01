@@ -1,8 +1,11 @@
-import logging
 import plotly_express as px
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 
 def gen_plotly_intents(df, threshold=(0.6, 1.0)):
+    logger.info({"message": "Generating intents plot."})
     df_temp = df[["response.intents.0.intent",
                   "response.intents.0.confidence"]]
     df_temp.columns = ["intent", "confidence"]
@@ -16,6 +19,7 @@ def gen_plotly_intents(df, threshold=(0.6, 1.0)):
                   title="Top 20 intents", height=600)
 
 def filter_df(df, threshold=(0.6, 1.0)):
+    logger.info({"message": "Filtering intents dataframe."})
     df_temp = df[["response.intents.0.intent", "response.intents.0.confidence", "request.input.text", "Date"]]
     df_temp.columns = ["intent", "confidence", "input", "date"]
     df_temp = df_temp[(df_temp["confidence"] >= threshold[0]) & (df_temp["confidence"] <= threshold[1])]

@@ -6,11 +6,13 @@
 # License: Apache 2.0 license.
 
 import json
-import logging
 import pandas as pd
 from conversation_analytics_toolkit import analysis
 from conversation_analytics_toolkit import transformation
 from conversation_analytics_toolkit import wa_assistant_skills
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 _html_template = """
 <html>
@@ -756,7 +758,7 @@ _html_template = """
 
 def prepare_data(logs, skill_id, workspace):
 
-    logging.info(
+    logger.info(
         {"message": "Preparing data for dialog flow.", "skill_id": skill_id})
 
     df_logs = pd.DataFrame(logs)
@@ -778,7 +780,7 @@ def prepare_data(logs, skill_id, workspace):
 
 def generate_html_report(config, data):
 
-    logging.info({"message": "Generating HTML report for Dialog Flow."})
+    logger.info({"message": "Generating HTML report for Dialog Flow."})
     
     config = json.dumps(config)
     data = json.dumps(data)

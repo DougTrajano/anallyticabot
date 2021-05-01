@@ -1,15 +1,15 @@
-import pandas as pd
-import numpy as np
-import logging
-import streamlit as st
-
 import spacy
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
-from nltk.tokenize import word_tokenize
+import numpy as np
+import pandas as pd
+import streamlit as st
 from nltk.util import ngrams
+from nltk.tokenize import word_tokenize
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
 from src.nlp_utils.text_preprocessing import normalize_text, apply_tfidf
+from src.helper_functions import setup_logger
 
+logger = setup_logger()
 SEED = 1993
 np.random.seed(SEED)
 
@@ -17,7 +17,7 @@ np.random.seed(SEED)
 class IntentsDiscovery:
     def __init__(self, data=None, n_clusters=None):
 
-        logging.info(
+        logger.info(
             {"message": "Instantiate IntentsDiscovery object.", "n_clusters": n_clusters})
 
         self.n_clusters = n_clusters
@@ -32,8 +32,8 @@ class IntentsDiscovery:
         https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html
         """
 
-        logging.info({"message": "Searching the best n_clusters.", "min_n_clusters": min_n_clusters,
-                      "max_n_clusters": max_n_clusters, "step_n_clusters": step_n_clusters, "early_stopping": early_stopping})
+        logger.info({"message": "Searching the best n_clusters.", "min_n_clusters": min_n_clusters,
+                     "max_n_clusters": max_n_clusters, "step_n_clusters": step_n_clusters, "early_stopping": early_stopping})
 
         in_search = True
         score_list = []
@@ -62,8 +62,8 @@ class IntentsDiscovery:
 
     def clustering(self, data=None, n_clusters=None, apply_cluster_name=True):
 
-        logging.info({"message": "Clustering phrases.",
-                      "n_clusters": n_clusters, "apply_cluster_name": apply_cluster_name})
+        logger.info({"message": "Clustering phrases.",
+                     "n_clusters": n_clusters, "apply_cluster_name": apply_cluster_name})
 
         if data != None:
             self.data = data
@@ -93,7 +93,7 @@ class IntentsDiscovery:
 
     def count_early_stopping(self, score_list):
 
-        logging.info({"message": "Checking early stopping policy."})
+        logger.info({"message": "Checking early stopping policy."})
 
         max_value = max(score_list)
         list_size = len(score_list)
@@ -103,8 +103,8 @@ class IntentsDiscovery:
 
     def text_processing(self, stopwords=False, inplace=True):
 
-        logging.info({"message": "Processing text.",
-                      "stopwords": stopwords, "inplace": inplace})
+        logger.info({"message": "Processing text.",
+                     "stopwords": stopwords, "inplace": inplace})
 
         if isinstance(stopwords, list):
             self._stopwords = stopwords
@@ -122,15 +122,15 @@ class IntentsDiscovery:
 
     def get_ngrams(self, text, n_grams=2):
 
-        logging.info({"message": "Getting n_grams."})
+        logger.info({"message": "Getting n_grams."})
 
         n_grams = ngrams(word_tokenize(text), n_grams)
         return [' '.join(grams) for grams in n_grams]
 
     def get_clusters_name(self, clean_texts=True):
 
-        logging.info({"message": "Getting clusters names.",
-                      "clean_texts": clean_texts})
+        logger.info({"message": "Getting clusters names.",
+                     "clean_texts": clean_texts})
 
         if clean_texts:
             nlp = spacy.load("pt_core_news_md")

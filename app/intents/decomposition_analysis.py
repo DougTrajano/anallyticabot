@@ -1,10 +1,12 @@
-import logging
 import streamlit as st
 from app.helper_functions import *
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 
 def decomposition_page(state):
-    logging.info({"message": "Loading Decomposition Analysis."})
+    logger.info({"message": "Loading Decomposition Analysis."})
     st.title("Decomposition Analysis")
     
     st.markdown("""

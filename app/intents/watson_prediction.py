@@ -1,12 +1,13 @@
-import logging
 import pandas as pd
 import streamlit as st
 from app.helper_functions import read_df, download_link
 from src.intents.watson_prediction import eval_intent_col, run_wa_preds, cache_df
+from src.helper_functions import setup_logger
 
+logger = setup_logger()
 
 def watson_prediction_page(state):
-    logging.info({"message": "Loading Watson Prediction page."})
+    logger.info({"message": "Loading Watson Prediction page."})
     st.title("Watson Prediction")
 
     st.markdown("""
@@ -47,7 +48,7 @@ def watson_prediction_page(state):
         if len(state.watson_prediction) >= 500:
             warning_msg = "Caution! This analysis will make several API calls and will incur costs. It will make {} API calls.".format(
                 len(state.watson_prediction["examples"].tolist()))
-            logging.warning({"message": warning_msg})
+            logger.warning({"message": warning_msg})
             st.warning(warning_msg)
 
         if st.button("Run Analysis"):

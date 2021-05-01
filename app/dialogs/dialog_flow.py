@@ -1,10 +1,11 @@
 import streamlit as st
 import datetime
-import logging
+from src.helper_functions import setup_logger
 
+logger = setup_logger()
 
 def dialogflow_page(state):
-    logging.info({"message": "Loading Dialog Flow page."})
+    logger.info({"message": "Loading Dialog Flow page."})
     st.title("Dialog Flow")
 
     col1, col2 = st.beta_columns(2)
@@ -57,7 +58,7 @@ def dialogflow_page(state):
                 query_logs = wa.define_query_by_date(logs_date[0], logs_date[1])
                 logs = wa.get_logs(query=query_logs)
             except Exception as error:
-                logging.error(
+                logger.error(
                     {"message": "Failed to fetch Watson Assistant logs.", "exception": error})
                 st.error("Failed to fetch Watson Assistant logs.")
 
@@ -70,7 +71,7 @@ def dialogflow_page(state):
                     html_report, 'dialog_flow.html', 'Download Dialog Flow report')
                 st.markdown(result, unsafe_allow_html=True)
             except Exception as error:
-                logging.error(
+                logger.error(
                     {"message": "Failed to generate Dialog Flow report.", "exception": error})
                 st.error("Failed to generate Dialog Flow report.")
 

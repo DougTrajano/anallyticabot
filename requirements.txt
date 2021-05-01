@@ -1,13 +1,12 @@
 nltk==3.5
 plotly==4.14.3
-pandas==1.2.2
+pandas==1.2.4
 spacy==3.0.1
 ibm_watson==5.1.0
-numpy==1.20.1
+numpy==1.20.2
 wordcloud==1.8.1
 tryagain==1.0
-Unidecode==1.2.0
-streamlit==0.79.0
+streamlit==0.81.0
 ibm_cloud_sdk_core==3.5.2
-scikit_learn==0.24.1
+scikit_learn==0.24.2
 conversation_analytics_toolkit==1.6.1

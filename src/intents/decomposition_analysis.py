@@ -1,7 +1,9 @@
 # Default libs
 import pandas as pd
 import numpy as np
-import logging
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 SEED = 1993
 np.random.seed(SEED)
@@ -25,7 +27,7 @@ pio.templates.default = "seaborn"
 
 
 def decomposition_reduction(examples, intents, method="PCA"):
-    logging.info({"message": "Initializing decomposition reduction."})
+    logger.info({"message": "Initializing decomposition reduction."})
     X = apply_tfidf(examples)
 
     if method.lower() == "TSNE":
@@ -63,7 +65,7 @@ def prepareDataIntents(df):
 class ExamplesDA():
     def __init__(self, examples, intents, decomposition_method="pca"):
 
-        logging.info({"message": "Instantiate ExamplesDA."})
+        logger.info({"message": "Instantiate ExamplesDA."})
 
         self.examples = examples
         self.intents = intents
@@ -73,7 +75,7 @@ class ExamplesDA():
         self.fig = None
 
     def text_processing(self, stopwords=False, stopwords_file=None):
-        logging.info({"message": "Processing examples."})
+        logger.info({"message": "Processing examples."})
         if stopwords:
             if isinstance(stopwords_file, str):
                 stopwords = load_stopwords(stopwords_file)
@@ -85,7 +87,7 @@ class ExamplesDA():
             example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
-        logging.info({"message": "Preparing data."})
+        logger.info({"message": "Preparing data."})
         if isinstance(self.examples_processed, list):
             self.data = decomposition_reduction(
                 self.examples_processed, self.intents, method=self.decomposition_method)
@@ -99,7 +101,7 @@ class ExamplesDA():
         return self.data
 
     def generate_fig(self, title="Example - Decomposition Analysis"):
-        logging.info({"message": "Generating figure."})
+        logger.info({"message": "Generating figure."})
         if not isinstance(self.data, pd.DataFrame):
             self.prepare_data()
 
@@ -144,14 +146,14 @@ class ExamplesDA():
         self.fig = fig
 
     def display(self):
-        logging.info({"message": "Displaying figure."})
+        logger.info({"message": "Displaying figure."})
         if self.fig == None:
             self.generate_fig()
 
         self.fig.show()
 
     def export_html(self, file_name="examples_analysis.html"):
-        logging.info({"message": "Exporting to HTML."})
+        logger.info({"message": "Exporting to HTML."})
         if self.fig == None:
             self.generate_fig()
 
@@ -161,7 +163,7 @@ class ExamplesDA():
 class IntentsDA():
     def __init__(self, examples, intents, decomposition_method="pca"):
 
-        logging.info({"message": "Instantiate IntentsDA."})
+        logger.info({"message": "Instantiate IntentsDA."})
 
         self.examples = examples
         self.intents = intents
@@ -171,7 +173,7 @@ class IntentsDA():
         self.fig = None
 
     def text_processing(self, stopwords=False, stopwords_file=None):
-        logging.info({"message": "Processing examples."})
+        logger.info({"message": "Processing examples."})
         if stopwords:
             if isinstance(stopwords_file, str):
                 stopwords = load_stopwords(stopwords_file)
@@ -183,7 +185,7 @@ class IntentsDA():
             example, nlp, stopwords) for example in self.examples]
 
     def prepare_data(self):
-        logging.info({"message": "Preparing data."})
+        logger.info({"message": "Preparing data."})
         if isinstance(self.examples_processed, list):
             examples = self.examples_processed
         else:
@@ -195,7 +197,7 @@ class IntentsDA():
         return self.data
 
     def generate_fig(self, title="Intents - Decomposition Analysis"):
-        logging.info({"message": "Generating figure."})
+        logger.info({"message": "Generating figure."})
         if not isinstance(self.data, pd.DataFrame):
             self.prepare_data()
 
@@ -231,14 +233,14 @@ class IntentsDA():
         self.fig = fig
 
     def display(self):
-        logging.info({"message": "Displaying figure."})
+        logger.info({"message": "Displaying figure."})
         if self.fig == None:
             self.generate_fig()
 
         return self.fig.show()
 
     def export_html(self, file_name="intents_analysis.html"):
-        logging.info({"message": "Exporting to HTML."})
+        logger.info({"message": "Exporting to HTML."})
         if self.fig == None:
             self.generate_fig()
 

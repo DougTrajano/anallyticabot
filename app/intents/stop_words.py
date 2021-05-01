@@ -1,12 +1,13 @@
-import logging
 import pandas as pd
 import streamlit as st
 from app.helper_functions import *
 from src.intents.stop_words import *
+from src.helper_functions import setup_logger
 
+logger = setup_logger()
 
 def stop_words_page(state):
-    logging.info({"message": "Loading Stopwords page."})
+    logger.info({"message": "Loading Stopwords page."})
     st.title("Stop Words")
     
     st.markdown("""

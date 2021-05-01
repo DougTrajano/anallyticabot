@@ -1,13 +1,15 @@
 import base64
-import logging
 import pandas as pd
 import streamlit as st
 from src.connectors.watson_assistant import WatsonAssistant
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 
 def test_watson_connection(skill_id, apikey, service_endpoint):
 
-    logging.info({"message": "Testing Watson Assistant connection.",
+    logger.info({"message": "Testing Watson Assistant connection.",
                   "skill_id": skill_id, "apikey": apikey, "service_endpoin": service_endpoint})
 
     wa = WatsonAssistant(apikey=apikey, service_endpoint=service_endpoint,
@@ -28,10 +30,10 @@ def try_read_df(f, cols_names, file_type="csv"):
             data = pd.read_csv(f, names=cols_names)
         else:
             data = pd.read_excel(f, names=cols_names)
-    except:
+    except Exception:
         data = None
-    finally:
-        return data
+    
+    return data
 
 
 def read_df(f, cols_names):
@@ -42,10 +44,11 @@ def read_df(f, cols_names):
         df = try_read_df(f, cols_names, file_type="xlsx")
 
     if not isinstance(df, pd.DataFrame):
-        df == None
+        df = None
         st.error(
             'Falha ao carregar arquivo. Veja a sessão "Enviando arquivos" na documentação.')
         st.stop()
+
     return df
 
 

@@ -1,5 +1,8 @@
 ![](images/anallyticabot_logo.png)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DougTrajano_anallyticabot&metric=alert_status)](https://sonarcloud.io/dashboard?id=DougTrajano_anallyticabot)
+
+
 **Anallyticabot** unlock insights from your data to create the right AI-powered conversational experiences.
 
 Anallyticabot is free to use and is an open source project! 💙

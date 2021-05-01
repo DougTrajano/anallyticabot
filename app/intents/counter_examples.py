@@ -1,10 +1,13 @@
 import time
 import streamlit as st
-import logging
 from app.helper_functions import *
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
+
 
 def counterexamples_page(state):
-    logging.info({"message": "Loading counterexamples page."})
+    logger.info({"message": "Loading counterexamples page."})
     st.title("Counterexamples")
 
     st.markdown("""
@@ -28,7 +31,7 @@ def counterexamples_page(state):
             st.success("Counterexample added.")
             time.sleep(state.alert_timeout)
         else:
-            logging.error({"message": "Failed to add the counterexample."})
+            logger.error({"message": "Failed to add the counterexample."})
             st.error("Failed to add the counterexample.")
             time.sleep(state.alert_timeout)
 
@@ -52,7 +55,7 @@ def counterexamples_page(state):
                     st.success("Counterexample deleted.")
                     time.sleep(state.alert_timeout)
                 else:
-                    logging.error({"message": "Failed to delete counterexample."})
+                    logger.error({"message": "Failed to delete counterexample."})
                     st.error("Failed to delete counterexample.")
                     time.sleep(state.alert_timeout)
                     

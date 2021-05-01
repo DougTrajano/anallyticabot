@@ -1,11 +1,13 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
-import unidecode
-import logging
+from unicodedata import normalize
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 def get_stop_words(corpus, remove_numbers=False):
 
-    logging.info({"message": "Getting stopwords.", "remove_numbers": remove_numbers})
+    logger.info({"message": "Getting stopwords.", "remove_numbers": remove_numbers})
 
     if remove_numbers:
         corpus = remove_numbers_from_corpus(corpus)
@@ -22,7 +24,7 @@ def get_stop_words(corpus, remove_numbers=False):
 
 def remove_numbers_from_corpus(corpus):
     
-    logging.info({"message": "Removing numbers from corpus."})
+    logger.info({"message": "Removing numbers from corpus."})
 
     new_corpus = []
     for txt in corpus:
@@ -32,14 +34,14 @@ def remove_numbers_from_corpus(corpus):
 
 def words_count(corpus):
 
-    logging.info({"message": "Getting words count."})
+    logger.info({"message": "Getting words count."})
     
     word_freq = {}
     
     words = ' '
     for txt in corpus:
         words += ' '
-        words += unidecode.unidecode(txt)
+        words += normalize('NFKD', txt).encode('ASCII','ignore').decode('ASCII')
     words = words.split()
 
     for word in words:

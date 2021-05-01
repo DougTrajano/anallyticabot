@@ -1,12 +1,14 @@
 import streamlit as st
 import spacy
 import itertools
-import logging
+from src.helper_functions import setup_logger
+
+logger = setup_logger()
 
 
 def apply_similarity(examples, intents):
 
-    logging.info(
+    logger.info(
         {"message": "Applying similarity for all examples in the skill."})
 
     nlp = spacy.load('pt_core_news_md')
@@ -38,7 +40,7 @@ def apply_similarity(examples, intents):
 
 def apply_similarity_intents(examples_lst, intents):
 
-    logging.info({"message": "Applying similarity inside intents."})
+    logger.info({"message": "Applying similarity inside intents."})
 
     nlp = spacy.load('pt_core_news_md')
 
