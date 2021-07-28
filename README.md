@@ -17,6 +17,7 @@ Anallyticabot is free to use and is an open source project! 💙
 - Intents Discovery
 - Examples similarity
 - Stopwords identify
+- Utterance generator
 - Watson predictions validation
 
 # Installation

@@ -12,22 +12,35 @@ def settings_page(state):
     if not isinstance(state.watson_args, dict):
         state.watson_args = {"connected": False}
 
+    # Watson Credentials
     st.markdown("## Watson Assistant - Credentials")
     st.write(
         "Need help? See this [Finding credentials in the UI](https://cloud.ibm.com/apidocs/assistant/assistant-v2#finding-credentials-in-the-ui) page in the IBM Cloud documentation.")
 
-    if state.watson_args["connected"] == False:
-        # Form without default values
-        watson_not_connected(state)
-    else:
-        # Form with default values
-        watson_connected(state)
+    with st.form(key="Watson Credentials"):
+        default_values = {}
+        if state.watson_args["connected"] == False:
+            default_values["skill_id"] = ""
+            default_values["apikey"] = ""
+            default_values["endpoint"] = "https://api.us-south.assistant.watson.cloud.ibm.com"
+        else:
+            default_values["skill_id"] = state.watson_args["skill_id"]
+            default_values["apikey"] = state.watson_args["apikey"]
+            default_values["endpoint"] = state.watson_args["endpoint"]
 
+        state.watson_args["skill_id"] = st.text_input(label="Skill ID",
+                                                      value=default_values["skill_id"])
 
-    col1, col2 = st.beta_columns(2)
+        state.watson_args["apikey"] = st.text_input(label="API Key",
+                                                    value=default_values["apikey"],
+                                                    type="password")
 
-    # Connect button
-    if col1.button("Connect"):
+        state.watson_args["endpoint"] = st.text_input(label="Region",
+                                                      value=default_values["endpoint"])
+
+        connect_button = st.form_submit_button("Connect")
+
+    if connect_button:
         watson_check = None
         with st.spinner("Connecting"):
             watson_check = test_watson_connection(state.watson_args["skill_id"],
@@ -44,17 +57,17 @@ def settings_page(state):
                     state.watson_args["skill_name"] = watson_check["name"]
                     time.sleep(state.alert_timeout)
 
-    # Disconnect button
-    if isinstance(state.watson_args, dict):
-        if state.watson_args.get("connected") == True:
-            if col2.button("Disconnect"):
-                if isinstance(state.watson_args, dict):
-                    state.watson_args = None
-                    st.success("Watson Assistant has been disconnected.")
-                    time.sleep(state.alert_timeout)
-                else:
-                    st.error("No Watson Assistant skills were connected.")
-                    time.sleep(state.alert_timeout)
+    # OpenAI GPT-3 Credentials
+    if not isinstance(state.openai, dict):
+        state.openai = {}
+
+    st.write("## OpenAI GPT-3")
+    st.markdown("GPT-3 is an autoregressive language model that uses deep learning to produce human-like text. We use GPT-3 in utterance generator.")
+
+    state.openai["apikey"] = st.text_input(label="API Key", key="openai_key",
+                                           value="" if state.openai.get("apikey") in [None, ""] else state.openai.get("apikey"),
+                                           type="password",
+                                           help="Get your API key in [beta.openai.com/account/api-keys](https://beta.openai.com/account/api-keys)")
 
     st.write("""
     ## NLP - Natural Language Processing
@@ -78,19 +91,3 @@ def settings_page(state):
         st.write("Stopwords count: {}".format(len(state.stopwords)))
 
     state.sync()
-
-
-def watson_connected(state):
-    state.watson_args["skill_id"] = st.text_input(
-        "Skill ID", state.watson_args["skill_id"])
-    state.watson_args["apikey"] = st.text_input(
-        "API key", state.watson_args["apikey"])
-    state.watson_args["endpoint"] = st.text_input(
-        "Region", state.watson_args["endpoint"])
-
-
-def watson_not_connected(state):
-    state.watson_args["skill_id"] = st.text_input("Skill ID")
-    state.watson_args["apikey"] = st.text_input("API key")
-    state.watson_args["endpoint"] = st.text_input(
-        "Region", "https://api.us-south.assistant.watson.cloud.ibm.com")
