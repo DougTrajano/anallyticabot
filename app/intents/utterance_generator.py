@@ -23,12 +23,30 @@ def utterances_gen_page(state):
         st.warning("Be careful editing these settings. We have defined these to make the utterance generator more robust and more efficient. However, if you want to try out the utterance generator, you can change these settings.")
 
         c1, c2 = st.beta_columns(2)
-        state.openai["engine"] = c1.selectbox("Engine", ["davinci", "curie", "babbage", "ada"])
-        state.openai["temp"] = c2.slider("Temperature", 0.1, 1.0, 0.7)
-        state.openai["max_tokens"] = c1.slider("Max tokens", 1, 2048, 32)
-        state.openai["top_p"] = c2.slider("Top P", 0.1, 1.0, 1.0)
-        state.openai["freq_p"] = c1.slider("Frequency penalty", 0.1, 1.0, 0.2)
-        state.openai["pres_p"] = c2.slider("Presence penalty", 0.1, 1.0, 0.2)
+        
+        state.openai["engine"] = c1.selectbox(label="Engine",
+                                              options=["davinci", "curie", "babbage", "ada"],
+                                              help="The engine to use for the API request. These engines provides a spectrum of capability, where davinci is the most capable and ada is the fastest.")
+        
+        state.openai["temp"] = c2.slider(label="Temperature",
+                                         min_value=0.1, max_value=1.0, value=0.7,
+                                         help="Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.")
+        
+        state.openai["max_tokens"] = c1.slider(label="Max tokens",
+                                               min_value=1, max_value=2048, value=32,
+                                               help="The maximum number of tokens to generate. Requests can use up to 2048 tokens shared between prompt and completion. (One token is roughly 4 characters for normal English text).")
+        
+        state.openai["top_p"] = c2.slider(label="Top P",
+                                          min_value=0.1, max_value=1.0, value=1.0,
+                                          help="Controls diversity via nucleus sampling: 0.5 means half of all likelihood-weighted options are considered.")
+        
+        state.openai["freq_p"] = c1.slider(label="Frequency penalty",
+                                           min_value=0.1, max_value=1.0, value=0.2,
+                                           help="How much to penalize new tokens based on their existing frequency in the text so far. Decreases the model's likelihood to repeat the same line verbatim.")
+        
+        state.openai["pres_p"] = c2.slider(label="Presence penalty",
+                                           min_value=0.1, max_value=1.0, value=0.2,
+                                           help="How much to penalize new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics.")
 
     utt_gen = UtteranceGenerator(openai_api_key=state.openai.get("apikey"),
                                  engine=state.openai.get("engine"),
