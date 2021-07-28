@@ -51,7 +51,7 @@ class UtteranceGenerator:
         pbar_counter = 0
         pbar = st.progress(pbar_counter)
 
-        for i in range(qty):
+        for _ in range(qty):
             response = self._call_openai_gpt(prompt)
 
             for row in response["choices"]:
