@@ -11,7 +11,7 @@ logger = setup_logger()
 def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
     logger.info({"message": "Normalizing example.", "example": example})
     if nlp == None:
-        nlp = spacy.load("pt_core_news_md")
+        nlp = spacy.load("en_core_web_sm")
 
     # Lower string
     example = example.lower()
@@ -28,7 +28,6 @@ def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
 
     # Remove unidecode
     example = normalize('NFKD', example).encode('ASCII','ignore').decode('ASCII')
-    example = unidecode.unidecode(example)
 
     # Lemmatization
     if lemmatizer == True:

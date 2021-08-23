@@ -15,16 +15,18 @@ np.random.seed(SEED)
 
 
 class IntentsDiscovery:
-    def __init__(self, data=None, n_clusters=None):
+    def __init__(self, data: list = None, n_clusters: int = None,
+                 spacy_model: str = "en_core_web_sm"):
 
-        logger.info(
-            {"message": "Instantiate IntentsDiscovery object.", "n_clusters": n_clusters})
+        logger.info({"message": "Instantiate IntentsDiscovery object.",
+                     "n_clusters": n_clusters})
 
         self.n_clusters = n_clusters
         self.data = data
         self.data_processed = None
         self.search_data = []
         self._stopwords = None
+        self.spacy_model = spacy.load(spacy_model)
 
     def search_n_clusters(self, data=None, min_n_clusters=2, max_n_clusters=100, step_n_clusters=1, early_stopping=4):
         """
@@ -111,9 +113,8 @@ class IntentsDiscovery:
         else:
             self._stopwords = None
 
-        nlp = spacy.load("pt_core_news_md")
         normalized_texts = [normalize_text(
-            text, nlp, self._stopwords) for text in self.data]
+            text, self.spacy_model, self._stopwords) for text in self.data]
 
         if inplace:
             self.data_processed = normalized_texts

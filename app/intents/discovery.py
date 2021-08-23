@@ -113,7 +113,7 @@ def discovery_page(state):
             from src.intents.discovery import IntentsDiscovery
 
             # Instantiate an object of IntentsDiscovery class
-            intents_discovery = IntentsDiscovery(data=unlabeled_examples)
+            intents_discovery = IntentsDiscovery(data=unlabeled_examples, spacy_model=state.spacy_model)
 
             # Apply preprocessing on dataset
             if isinstance(state.stopwords, list):

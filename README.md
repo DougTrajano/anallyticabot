@@ -2,10 +2,9 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DougTrajano_anallyticabot&metric=alert_status)](https://sonarcloud.io/dashboard?id=DougTrajano_anallyticabot)
 
-
 **Anallyticabot** unlock insights from your data to create the right AI-powered conversational experiences.
 
-Anallyticabot is free to use and is an open source project! 💙
+Anallyticabot is free to use and is an open-source project! 💙
 
 ![](images/home_page.png)
 
@@ -43,7 +42,7 @@ streamlit run anallyticabot.py
 
 # Can I see a demo?
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/dougtrajano/anallyticabot/anallyticabot.py)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/dougtrajano/anallyticabot/main/anallyticabot.py)
 
 # License
 

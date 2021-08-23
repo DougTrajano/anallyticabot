@@ -56,6 +56,7 @@ def settings_page(state):
                     state.watson_args["connected"] = True
                     state.watson_args["skill_name"] = watson_check["name"]
                     time.sleep(state.alert_timeout)
+                    st.experimental_rerun()
 
     # OpenAI GPT-3 Credentials
     if not isinstance(state.openai, dict):
@@ -89,5 +90,12 @@ def settings_page(state):
         if len(df) > 0:
             state.stopwords = df["stopwords"].tolist()
         st.write("Stopwords count: {}".format(len(state.stopwords)))
+
+    spacy_model = st.selectbox("Spacy Model", options=["English", "Portuguese"])
+
+    if spacy_model == "Portuguese":
+        state.spacy_model = "pt_core_news_md"
+    else:
+        state.spacy_model = "en_core_web_sm"
 
     state.sync()
