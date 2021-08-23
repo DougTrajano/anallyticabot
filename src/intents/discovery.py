@@ -138,9 +138,8 @@ class IntentsDiscovery:
                      "clean_texts": clean_texts})
 
         if clean_texts:
-            nlp = spacy.load(self.spacy_model)
             example = [normalize_text(
-                text, nlp, self._stopwords, lemmatizer=False) for text in self.data]
+                text, self.spacy_model, self._stopwords, lemmatizer=False) for text in self.data]
         else:
             example = self.data
 
