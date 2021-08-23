@@ -19,10 +19,10 @@ def utterances_gen_page(state):
             "You need to set your [OpenAI](https://openai.com/) key on the settings page before using the utterance generator.")
         st.stop()
 
-    with st.beta_expander("OpenAI Settings"):
+    with st.expander("OpenAI Settings"):
         st.warning("Be careful editing these settings. We have defined these to make the utterance generator more robust and more efficient. However, if you want to try out the utterance generator, you can change these settings.")
 
-        c1, c2 = st.beta_columns(2)
+        c1, c2 = st.columns(2)
         
         state.openai["engine"] = c1.selectbox(label="Engine",
                                               options=["davinci", "curie", "babbage", "ada"],
@@ -58,7 +58,7 @@ def utterances_gen_page(state):
 
     with st.form("Sample utterances"):
 
-        c1, c2 = st.beta_columns(2)
+        c1, c2 = st.columns(2)
         utts_qty = c1.number_input(label="Number of utterances to generate",
                                    min_value=1,
                                    max_value=100,
