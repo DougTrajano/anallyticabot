@@ -13,7 +13,7 @@ def conversation_metrics_page(state):
     """)
 
     st.subheader("Parameters")
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     args = {}
 
@@ -44,19 +44,12 @@ def conversation_metrics_page(state):
         
         metrics = get_metrics(df_logs, args)
 
-        col1, col2, col3, col4 = st.beta_columns(4)
+        c1, c2, c3, c4 = st.columns(4)
         
-        col1.write("# {}".format(metrics["sessions_count"]))
-        col1.write("Sessions count")
-        
-        col2.write("# {}".format(metrics["messages_count"]))
-        col2.write("Msgs count")
-        
-        col3.write("# {}".format(metrics["avg_messages"]))
-        col3.write("Avg. msgs per session")
-
-        col4.write("# {}".format(metrics["active_users"]))
-        col4.write("Active Users")
+        c1.metric(label="Sessions count", value=metrics["sessions_count"])
+        c2.metric(label="Messages count", value=metrics["messages_count"])
+        c3.metric(label="Avg messages per session", value=metrics["avg_messages"])
+        c4.metric(label="Active users", value=metrics["active_users"])
 
         # Plotly Datetime per day
         fig_date_options = list(args.keys())
