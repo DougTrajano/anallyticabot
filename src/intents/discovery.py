@@ -18,8 +18,7 @@ class IntentsDiscovery:
     def __init__(self, data: list = None, n_clusters: int = None,
                  spacy_model: str = "en_core_web_sm"):
 
-        logger.info({"message": "Instantiate IntentsDiscovery object.",
-                     "n_clusters": n_clusters})
+        nltk.download('punkt')
 
         self.n_clusters = n_clusters
         self.data = data
@@ -27,6 +26,10 @@ class IntentsDiscovery:
         self.search_data = []
         self._stopwords = None
         self.spacy_model = spacy.load(spacy_model)
+
+        logger.info({"message": "Instantiate IntentsDiscovery object.",
+                     "n_clusters": n_clusters})
+        
 
     def search_n_clusters(self, data=None, min_n_clusters=2, max_n_clusters=100, step_n_clusters=1, early_stopping=4):
         """
@@ -134,7 +137,7 @@ class IntentsDiscovery:
                      "clean_texts": clean_texts})
 
         if clean_texts:
-            nlp = spacy.load("pt_core_news_md")
+            nlp = spacy.load(self.spacy_model)
             example = [normalize_text(
                 text, nlp, self._stopwords, lemmatizer=False) for text in self.data]
         else:
