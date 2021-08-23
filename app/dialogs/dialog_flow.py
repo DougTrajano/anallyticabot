@@ -8,7 +8,7 @@ def dialogflow_page(state):
     logger.info({"message": "Loading Dialog Flow page."})
     st.title("Dialog Flow")
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
     col1.markdown("""
     The dialog flow visualization is an interactive tool for investigating user journeys, visits and abandonments within the steps of the dialog system.
 
@@ -27,13 +27,13 @@ def dialogflow_page(state):
     end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=7)
 
-    col_1, col_2 = st.beta_columns(2)
+    col_1, col_2 = st.columns(2)
     config['title'] = col_1.text_input('Title', value=title_default)
     config['commonRootPathName'] = config['title']
     logs_date = col_2.date_input(
         'Logs date range', value=(start_date, end_date))
 
-    col_1, col_2, col_3, col_4 = st.beta_columns(4)
+    col_1, col_2, col_3, col_4 = st.columns(4)
     config['maxChildrenInNode'] = col_1.number_input('Max children in node', value=6)
 
     config['sortByAttribute'] = col_2.selectbox('Sort by attribute',

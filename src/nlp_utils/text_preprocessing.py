@@ -28,7 +28,6 @@ def normalize_text(example, nlp=None, stopwords=None, lemmatizer=True):
 
     # Remove unidecode
     example = normalize('NFKD', example).encode('ASCII','ignore').decode('ASCII')
-    example = unidecode.unidecode(example)
 
     # Lemmatization
     if lemmatizer == True:

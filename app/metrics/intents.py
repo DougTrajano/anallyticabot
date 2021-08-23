@@ -57,11 +57,11 @@ def intents_metrics_page(state):
         df_intents = filter_df(df_logs, args["threshold"])
         for intent in df_intents["intent"].unique():
             try:
-                with st.beta_expander(intent):
+                with st.expander(intent):
                     for row in df_intents[df_intents["intent"] == intent].to_dict(orient="records"):
-                        col1, col2 = st.beta_columns(2)
-                        col1.text(row["input"])
-                        col2.text(row["confidence"])
+                        c1, c2 = st.columns(2)
+                        c1.text(row["input"])
+                        c2.text(row["confidence"])
             except Exception as error:
                 logging.error({"message": "Failed to generate export.", "exception": error})
                 st.error("Failed to generate export.")
