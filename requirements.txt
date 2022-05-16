@@ -10,6 +10,6 @@ wordcloud==1.8.1
 tryagain==1.0
 streamlit==0.87.0
 ibm_cloud_sdk_core==3.15.1
-scikit_learn==0.24.2
+scikit_learn==1.1.0
 conversation_analytics_toolkit==1.6.1
 openai==0.18.0
