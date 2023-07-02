@@ -1,6 +1,6 @@
 from sqlmodel import Field, SQLModel
 from pydantic import validator
-from database.models.commons import (
+from api.database.models.commons import (
     UUIDField,
     CreatedAtField,
     CreatedByField,

@@ -15,24 +15,24 @@ services:
       - database:/var/lib/postgresql/data
       - ./scripts:/docker-entrypoint-initdb.d
 
-  keycloak:
-    container_name: keycloak
-    image: quay.io/keycloak/keycloak:21.1.0
-    command: start-dev
-    restart: always
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
-      KC_DB_URL_HOST: database
-      KC_DB_URL_DATABASE: keycloak
-      KC_DB_USERNAME: ${DATABASE_USER:-postgres}
-      KC_DB_PASSWORD: ${DATABASE_PASSWORD:-postgres}
-    ports:
-      - 3333:8080
-    depends_on:
-      - database
+  # keycloak:
+  #   container_name: keycloak
+  #   image: quay.io/keycloak/keycloak:21.1.0
+  #   command: start-dev
+  #   restart: always
+  #   environment:
+  #     KEYCLOAK_ADMIN: admin
+  #     KEYCLOAK_ADMIN_PASSWORD: admin
+  #     KC_DB: postgres
+  #     KC_DB_URL: jdbc:postgresql://database:5432/keycloak
+  #     KC_DB_URL_HOST: database
+  #     KC_DB_URL_DATABASE: keycloak
+  #     KC_DB_USERNAME: ${DATABASE_USER:-postgres}
+  #     KC_DB_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+  #   ports:
+  #     - 3333:8080
+  #   depends_on:
+  #     - database
 
   backend:
     container_name: backend

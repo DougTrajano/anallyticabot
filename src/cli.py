@@ -52,7 +52,7 @@ def backend(
     process = Popen(
         [
             "uvicorn",
-            "main:app",
+            "api.main:app",
             "--host",
             host,
             "--port",
@@ -60,7 +60,7 @@ def backend(
             "--reload"
         ],
         stdout=PIPE,
-        cwd=Path("src/api").absolute().as_posix()
+        cwd=Path("src").absolute().as_posix()
     )
 
     output, error = process.communicate()

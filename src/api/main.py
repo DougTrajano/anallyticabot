@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.logger import logger
-from routes.skills.watson import router as skills_router
-from routes.tasks import router as tasks_router
-from database.base import create_db_and_tables
-from utils.settings import Settings
+from api.routes.skills.watson import router as skills_router
+from api.routes.tasks import router as tasks_router
+from api.database.base import create_db_and_tables
+from api.utils.settings import Settings
 
 logger.info("Starting up.")
 

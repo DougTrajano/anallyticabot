@@ -1,6 +1,6 @@
 from sqlmodel import Field, SQLModel
 from typing import Optional
-from database.models.commons import (
+from api.database.models.commons import (
     UUIDField,
     CreatedAtField,
     CreatedByField,

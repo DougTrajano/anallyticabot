@@ -1,5 +1,5 @@
-#from worker.tasks.factory import TaskFactory
 from typing import Any, Dict
+from worker.tasks.factory import TaskFactory
 
 class TaskCreator(object):
     def __init__(self, task_name: str, task_args: Dict[str, Any]):
@@ -12,7 +12,5 @@ class TaskCreator(object):
         Returns:
         - bool: True if task_name is registered in TaskFactory, False otherwise.
         """
-        pass
-        
-        #return self.task_name in TaskFactory.registry.keys()
+        return self.task_name in TaskFactory.registry.keys()
     

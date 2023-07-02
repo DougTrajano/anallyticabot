@@ -2,8 +2,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils.settings import Settings
-from utils.logger import logger
+from api.utils.settings import Settings
+from api.utils.logger import logger
 
 def get_database_url():
     """Returns the database URL based on the settings."""

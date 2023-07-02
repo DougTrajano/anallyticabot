@@ -1,4 +1,4 @@
-from utils.logger import logger
+from api.utils.logger import logger
 
 class Kubernetes(object):
     def __init__(self) -> None:

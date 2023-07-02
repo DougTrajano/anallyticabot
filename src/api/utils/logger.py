@@ -1,5 +1,5 @@
 import logging
-from utils.settings import Settings
+from api.utils.settings import Settings
 
 def setup_logger(
         name: str = __file__,
