@@ -100,7 +100,8 @@ def alembic(
             "-m",
             message
         ],
-        stdout=PIPE
+        stdout=PIPE,
+        cwd=Path("src").absolute().as_posix()
     )
 
     output, error = process.communicate()

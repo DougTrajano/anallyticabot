@@ -3,9 +3,9 @@ uvicorn==0.22.0
 psycopg2-binary==2.9.6
 asyncpg==0.27.0
 sqlmodel==0.0.8
-streamlit==1.23.1
+streamlit==1.24.0
 # streamlit-keycloak==1.1.1
 pydantic==1.10.8
-plotly==5.14.1
+plotly==5.15.0
 typer==0.9.0
 alembic==1.11.1
