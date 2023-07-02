@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  database:
+    container_name: database
+    image: postgres:15.3-alpine3.18
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER:-postgres}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-postgres}
+      - POSTGRES_MULTIPLE_DATABASES=anallyticabot,keycloak
+    ports:
+      - 5432:5432
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:21.1.0
+    command: start-dev
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
+      KC_DB_URL_HOST: database
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${DATABASE_USER:-postgres}
+      KC_DB_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+    ports:
+      - 3333:8080
+    depends_on:
+      - database
+
+  backend:
+    container_name: backend
+    build: .
+    command: backend
+    # restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: anallyticabot
+      DB_USER: ${DATABASE_USER:-postgres}
+      DB_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+    volumes:
+      - .:/app
+
+  frontend:
+    container_name: frontend
+    build: .
+    command: frontend
+    # restart: always
+    ports:
+      - 8501:8501
+    depends_on:
+      - backend
+
+volumes:
+  database:

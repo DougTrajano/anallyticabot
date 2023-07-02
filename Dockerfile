@@ -1,25 +1,15 @@
-# base image
-FROM python:3.8
+FROM python:3.10-slim
 
-# making directory of app
-RUN mkdir /app
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+COPY . /app
 
-# copy over requirements
-COPY requirements.txt /app/
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -U -r requirements.txt
 
-# install pip then packages
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt --upgrade
-RUN python -m spacy download pt_core_news_md
-
-# copying all files over
-COPY . /app/
-
-ENV PYTHONPATH="${PYTHONPATH}:/app"
-
-# exposing default port for streamlit
-EXPOSE 8501
-
-# cmd to launch app when container is run
-CMD streamlit run anallyticabot.py
+# Set the entrypoint
+ENTRYPOINT ["python", "src/cli.py"]

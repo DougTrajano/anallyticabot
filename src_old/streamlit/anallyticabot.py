@@ -1,11 +1,10 @@
-from src.helper_functions import load_parameters, setup_logger
+from src.utils.logger import setup_logger
 from src.utils.plotly import setup_plotly_theme
 
 logger = setup_logger()
             
 logger.info({"message": "Anallyticabot started."})
 
-# Setup plotly theme
 setup_plotly_theme()
 
 # Dialogs page
