@@ -1,9 +1,8 @@
-from pydantic import BaseSettings, Field
+"""Settings for worker service."""	
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
-class Settings(BaseSettings):
-    LOG_LEVEL: str = Field("INFO", description="Logging level")
-    
-    API_ENDPOINT: str = Field("http://localhost:8000", description="API endpoint")
-    # API_TOKEN: str = Field(..., description="API token")
-
-    
+class WorkerSettings(BaseSettings):
+    """Settings for worker service."""
+    API_BASE_ENDPOINT: str = Field(..., description="Base endpoint for API.")
+    API_TOKEN: str = Field(..., description="API token for authentication.")

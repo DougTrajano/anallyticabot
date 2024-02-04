@@ -3,7 +3,7 @@ version: '3.9'
 services:
   database:
     container_name: database
-    image: postgres:15.3-alpine3.18
+    image: postgres:16.1-alpine3.19
     restart: always
     environment:
       - POSTGRES_USER=${DATABASE_USER:-postgres}
@@ -44,13 +44,26 @@ services:
     depends_on:
       - database
     environment:
-      DB_HOST: database
-      DB_PORT: 5432
-      DB_NAME: anallyticabot
-      DB_USER: ${DATABASE_USER:-postgres}
-      DB_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      LOGGING_LEVEL: DEBUG
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      DATABASE_NAME: anallyticabot
+      DATABASE_USER: ${DATABASE_USER:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      WORKER_IMAGE_URI: ${WORKER_IMAGE_URI}
+      # FARGATE_TASK_ROLE_ARN: ${FARGATE_TASK_ROLE_ARN}
+      # FARGATE_EXECUTION_ROLE_ARN: ${FARGATE_EXECUTION_ROLE_ARN}
+      # FARGATE_SECURITY_GROUP_IDS: ${FARGATE_SECURITY_GROUP_IDS}
+      # FARGATE_SUBNET_IDS: ${FARGATE_SUBNET_IDS}
+      # FARGATE_TASK_TAGS: ${FARGATE_TASK_TAGS}
+      # WORKER_BACKEND: fargate
+      WORKER_BACKEND: docker
     volumes:
-      - .:/app
+      - .:/app # development only
+      - /var/run/docker.sock:/var/run/docker.sock # it's necessary to run docker inside docker
 
   frontend:
     container_name: frontend

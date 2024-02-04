@@ -1,11 +1,11 @@
 import requests
-from worker.settings import Settings
+from worker.settings import WorkerSettings
 
 
 class Callback(object):
     """Base Callback"""
     def __init__(self):
-        self.args = Settings()
+        self.args = WorkerSettings()
 
     def on_start(self):
         """On Start"""
@@ -21,6 +21,6 @@ class Callback(object):
 
     def update_task_status(self, task_id, status):
         """Update Task Status"""
-        url = '{}/api/v1/task/{}/'.format(self.args.API_ENDPOINT, task_id)
+        url = '{}/api/v1/task/{}/'.format(self.args.WORKER_API_ENDPOINT, task_id)
         data = {'status': status}
         requests.patch(url, data=data)

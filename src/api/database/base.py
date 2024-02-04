@@ -8,10 +8,10 @@ from api.utils.logger import logger
 def get_database_url():
     """Returns the database URL based on the settings."""
     return (
-        f"{Settings().DB_DIALECT}://"
-        f"{Settings().DB_USER}:{Settings().DB_PASSWORD}@"
-        f"{Settings().DB_HOST}:{Settings().DB_PORT}/"
-        f"{Settings().DB_NAME}"
+        f"{Settings().DATABASE_DIALECT}://"
+        f"{Settings().DATABASE_USER}:{Settings().DATABASE_PASSWORD}@"
+        f"{Settings().DATABASE_HOST}:{Settings().DATABASE_PORT}/"
+        f"{Settings().DATABASE_NAME}"
     )
 
 async_engine = create_async_engine(
@@ -34,7 +34,7 @@ async def create_db_and_tables():
     """Creates the database and tables."""
     logger.info("Creating database and tables.")
     async with async_engine.begin() as conn:
-        if Settings().DB_DROP_ALL:
-            logger.info("Dropping all tables because DB_DROP_ALL is set to True.")
+        if Settings().DATABASE_DROP_ALL:
+            logger.info("Dropping all tables because DATABASE_DROP_ALL is set to True.")
             await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)

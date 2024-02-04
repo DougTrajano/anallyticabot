@@ -1,4 +1,4 @@
-from worker.tasks.base import Task
+from worker.tasks.base import TaskBase
 
 
 class TaskFactory:
@@ -15,13 +15,13 @@ class TaskFactory:
         Returns:
         - callable: A decorator.
         """
-        def decorator(task_cls: Task) -> callable:
+        def decorator(task_cls: TaskBase) -> TaskBase:
             cls.registry[name] = task_cls
             return task_cls
         return decorator
     
     @classmethod
-    def create_executor(cls, task_id: str, task_name: str) -> Task:
+    def create_executor(cls, task_id: str, task_name: str) -> TaskBase:
         """Creates a task executor.
 
         Args:
@@ -34,4 +34,4 @@ class TaskFactory:
         task_cls = cls.registry.get(task_name)
         if task_cls is None:
             raise Exception(f"Task {task_name} not found. Registry: {cls.registry}")
-        return task_cls(task_id)
+        return task_cls(task_id=task_id)

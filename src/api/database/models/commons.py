@@ -34,8 +34,8 @@ class UpdatedByField(SQLModel):
 
 class UpdatedAtField(SQLModel):
     updated_at: datetime.datetime = Field(
-        default_factory=datetime.datetime.utcnow,
-        nullable=False,
+        default=None,
+        nullable=True,
         sa_column_kwargs={
             "server_default": text("current_timestamp(0)"),
             "onupdate": text("current_timestamp(0)")
