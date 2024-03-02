@@ -7,7 +7,7 @@ from pydantic import Field
 from api.backends.base import BackendBase
 from api.backends.factory import BackendFactory
 from api.backends.settings import BackendSettings
-from api.utils.logger import logger
+from common.logger import logger
 from worker.tasks.base import TaskBase
 
 
@@ -100,7 +100,7 @@ class FargateBackend(BackendBase):
             task_definition_name=task.name,
             image_uri=self.args.WORKER_IMAGE_URI,
             cpu=task.cpu,
-            memory=task.memory,
+            memory=task.memory_in_mb,
             task_tags=self.args.FARGATE_TASK_TAGS):
 
             logger.info("Task definition %s not found. Creating...", task.name)
@@ -109,7 +109,7 @@ class FargateBackend(BackendBase):
                 task_definition_name=task.name,
                 image_uri=self.args.WORKER_IMAGE_URI,
                 cpu=task.cpu,
-                memory=task.memory,
+                memory=task.memory_in_mb,
                 task_role_arn=self.args.FARGATE_TASK_ROLE_ARN,
                 execution_role_arn=self.args.FARGATE_EXECUTION_ROLE_ARN,
                 task_tags=self.args.FARGATE_TASK_TAGS
@@ -124,7 +124,7 @@ class FargateBackend(BackendBase):
             command=command,
             environment=task.environment,
             cpu=task.cpu,
-            memory=task.memory
+            memory=task.memory_in_mb
         )
 
         return response

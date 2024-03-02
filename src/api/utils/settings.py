@@ -27,6 +27,7 @@ class Settings(BaseSettings):
         "Anallyticabot unlock insights from your data to create the right AI-powered conversational experiences.",
         description="API description"
     )
+    API_ROOT_PATH: str = Field("", description="API root path")
 
 class WorkerSettings(BaseSettings):
     WORKER_IMAGE_URI: str = Field(
@@ -40,10 +41,10 @@ class WorkerSettings(BaseSettings):
     )
 
     WORKER_API_ENDPOINT: str = Field(
-        "http://localhost:8000",
+        "http://backend:8000",
         description="API endpoint"
     )
-    
+
     WORKER_API_TOKEN: str = Field(
         default_factory=lambda: str(uuid.uuid4()),
         description=(
@@ -52,9 +53,14 @@ class WorkerSettings(BaseSettings):
         )
     )
 
+    WORKER_LOG_LEVEL: str = Field(
+        "INFO",
+        description="Logging level for the worker."
+    )
+
     # send warning when using latest tag
     @validator("WORKER_IMAGE_URI")
-    def image_uri_is_latest(cls, v: str):
+    def image_uri_is_latest(cls, v: str): # pylint: disable=no-self-argument, no-self-use
         if v.endswith(":latest"):
             warnings.warn("Using latest tag is not recommended", UserWarning)
         return v

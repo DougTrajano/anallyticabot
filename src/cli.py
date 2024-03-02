@@ -1,7 +1,9 @@
-import typer
-from subprocess import Popen, PIPE
+"""CLI for running the application."""
 from pathlib import Path
+from subprocess import Popen, PIPE
 from worker.tasks.factory import TaskFactory
+import typer
+
 
 cli = typer.Typer()
 
@@ -9,13 +11,15 @@ cli = typer.Typer()
 def frontend(
     port: int = 8501,
     enable_cors: bool = True,
-    enable_xsr: bool = False):
+    enable_xsr: bool = False,
+    run_on_save: bool = True):
     """Starts the frontend server (streamlit)
 
     Args:
     - port: Port to run the frontend server on
     - enable_cors: Enable CORS
     - enable_xsr: Enable XSRF
+    - run_on_save: Run on save
     """
     typer.echo("Starting frontend server...")
 
@@ -23,18 +27,18 @@ def frontend(
         [
             "streamlit",
             "run",
-            "Home.py",
+            "app/Home.py",
             "--server.port",
             str(port),
             f"--server.enableCORS={str(enable_cors).lower()}",
             f"--server.enableXsrfProtection={str(enable_xsr).lower()}",
-            f"--server.runOnSave=true"
+            f"--server.runOnSave={str(run_on_save).lower()}"
         ],
         stdout=PIPE,
-        cwd=Path("src/app").absolute().as_posix()
+        cwd=Path("src").absolute().as_posix()
     )
 
-    output, error = process.communicate()
+    output, _ = process.communicate()
     typer.echo(output.decode("utf-8"))
 
 @cli.command()
@@ -63,7 +67,7 @@ def backend(
         cwd=Path("src").absolute().as_posix()
     )
 
-    output, error = process.communicate()
+    output, _ = process.communicate()
     typer.echo(output.decode("utf-8"))
 
 @cli.command()
@@ -79,7 +83,7 @@ def worker(
     typer.echo(f"Starting worker for task {task_name} (id: {task_id}).")
     task = TaskFactory.create_executor(task_id, task_name)
     typer.echo(f"Running task {task.__class__.__name__} (id: {task.id}).")
-    task._run()
+    task.run_flow()
     typer.echo(f"Task {task_name} (id: {task_id}) completed.")
 
 @cli.command()
@@ -104,7 +108,7 @@ def alembic(
         cwd=Path("src").absolute().as_posix()
     )
 
-    output, error = process.communicate()
+    output, _ = process.communicate()
     typer.echo(output.decode("utf-8"))
 
 if __name__ == "__main__":

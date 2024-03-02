@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.init import streamlit_init
+from app.utils.streamlit import streamlit_init
 
 streamlit_init()
 

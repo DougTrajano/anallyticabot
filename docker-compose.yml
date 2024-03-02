@@ -38,13 +38,14 @@ services:
     container_name: backend
     build: .
     command: backend
-    # restart: always
+    restart: always
     ports:
       - 8000:8000
     depends_on:
       - database
     environment:
-      LOGGING_LEVEL: DEBUG
+      LOG_LEVEL: INFO
+      API_ROOT_PATH: /api
       DATABASE_HOST: database
       DATABASE_PORT: 5432
       DATABASE_NAME: anallyticabot
@@ -54,6 +55,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
       WORKER_IMAGE_URI: ${WORKER_IMAGE_URI}
+      WORKER_LOG_LEVEL: DEBUG
       # FARGATE_TASK_ROLE_ARN: ${FARGATE_TASK_ROLE_ARN}
       # FARGATE_EXECUTION_ROLE_ARN: ${FARGATE_EXECUTION_ROLE_ARN}
       # FARGATE_SECURITY_GROUP_IDS: ${FARGATE_SECURITY_GROUP_IDS}
@@ -69,11 +71,14 @@ services:
     container_name: frontend
     build: .
     command: frontend
-    # restart: always
+    restart: always
     ports:
       - 8501:8501
     depends_on:
       - backend
+    volumes:
+      # - .:/app # development only
+      - /run/desktop/mnt/host/c/Users/dougl/OneDrive/Code/GitHub/anallyticabot:/app # development only
 
 volumes:
   database:

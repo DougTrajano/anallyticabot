@@ -7,25 +7,29 @@ from sqlalchemy.dialects.postgresql import JSONB
 from api.database.models.commons import (
     UUIDField,
     CreatedAtField,
-    CreatedByField,
-    UpdatedAtField,
-    UpdatedByField
+    CreatedByField
 )
 
 class TaskModel(SQLModel):
     """Base model for Task."""
 
-class TaskInput(TaskModel):
-    """TaskInput model."""
-    input: Optional[dict] = Field(
+class TaskInputs(TaskModel):
+    """TaskInputs model."""
+    inputs: Optional[dict] = Field(
         default=None,
         sa_type=JSONB,
         nullable=True
     )
 
-class TaskOutput(TaskModel):
-    """TaskOutput model."""
-    output: Optional[dict] = Field(
+    params: Optional[dict] = Field(
+        default=None,
+        sa_type=JSONB,
+        nullable=True
+    )
+
+class TaskOutputs(TaskModel):
+    """TaskOutputs model."""
+    outputs: Optional[dict] = Field(
         default=None,
         sa_type=JSONB,
         nullable=True
@@ -39,23 +43,44 @@ class TaskBase(TaskModel):
     status_desc: Optional[str] = Field(None, nullable=True)
     start_time: Optional[datetime.datetime] = Field(None, nullable=True)
     end_time: Optional[datetime.datetime] = Field(None, nullable=True)
-    progress: int = Field(0)
+    progress: Optional[float] = Field(None, nullable=True)
 
-class Task(
+class TaskRead(
     TaskBase,
     UUIDField,
     CreatedAtField,
+    CreatedByField):
+    """TaskRead model."""
+
+class TaskCreate(
+    TaskInputs,
+    CreatedByField):
+    """TaskCreate model."""
+    name: str = Field(index=True, nullable=False)
+
+class TaskUpdate(TaskModel):
+    """TaskUpdate model."""
+    status: Optional[str] = Field(None, nullable=True)
+    status_desc: Optional[str] = Field(None, nullable=True)
+    progress: Optional[float] = Field(None, nullable=True)
+    start_time: Optional[datetime.datetime] = Field(None, nullable=True)
+    end_time: Optional[datetime.datetime] = Field(None, nullable=True)
+
+class Task(
+    TaskBase,
+    TaskInputs,
+    TaskOutputs,
+    UUIDField,
+    CreatedAtField,
     CreatedByField,
-    UpdatedAtField,
-    UpdatedByField,
     table=True):
     """Task model."""
 
     @validator("progress")
-    def progress_must_be_between_0_and_100(cls, v: int): # pylint: disable=no-self-argument, no-self-use
-        """Validate progress must be between 0 and 100."""
-        if v < 0 or v > 100:
-            raise ValueError("progress must be between 0 and 100")
+    def progress_must_be_between_0_and_1(cls, v: int): # pylint: disable=no-self-argument, no-self-use
+        """Validate progress must be between 0 and 1."""
+        if v < 0 or v > 1:
+            raise ValueError("progress must be between 0 and 1.")
         return v
 
     @validator("status")
@@ -67,25 +92,4 @@ class Task(
 
     class Config:
         """Config for Task model."""
-        arbitrary_types_allowed = True # Allow JSON type
-
-class TaskRead(
-    TaskBase,
-    UUIDField,
-    CreatedAtField,
-    CreatedByField,
-    UpdatedAtField,
-    UpdatedByField):
-    """TaskRead model."""
-
-class TaskCreate(
-    TaskInput,
-    CreatedByField):
-    """TaskCreate model."""
-    name: str = Field(index=True, nullable=False)
-
-class TaskUpdate(
-    TaskInput,
-    UUIDField,
-    UpdatedByField):
-    """TaskUpdate model."""
+        arbitrary_types_allowed = True # Allow JSON types

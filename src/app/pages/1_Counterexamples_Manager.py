@@ -1,12 +1,12 @@
+"""A page for managing IBM Watsonx Assistant counterexamples."""
 import streamlit as st
-from utils.init import streamlit_init
+from utils.streamlit import app_init
 
-streamlit_init()
+app_init()
 
-def page(title: str = "Counterexamples Manager"):
-    st.title(title)
-    st.sidebar.header(title)
-    st.write("""Demo""")
-    
-if st.session_state.kc.authenticated:
-    page()
+def page():
+    """Counterexamples Manager page."""
+    st.title("Counterexamples Manager")
+    st.write("Demo")
+
+page()

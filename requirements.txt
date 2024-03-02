@@ -20,7 +20,6 @@ scikit_learn==1.3.2
 spacy==3.7.2
 sqlmodel==0.0.14
 streamlit==1.31.0
-# streamlit-keycloak==1.1.1
 tryagain==1.0
 typer==0.9.0
 uvicorn==0.25.0

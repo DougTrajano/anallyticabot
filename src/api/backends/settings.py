@@ -5,6 +5,11 @@ from pydantic_settings import BaseSettings
 
 class BackendSettings(BaseSettings):
     """Settings for the backend."""
+    DEBUG: bool = Field(
+        default=False,
+        description="Whether the backend is running in debug mode."
+    )
+
     WORKER_IMAGE_URI: str = Field(
         default="dougtrajano/anallyticabot:latest",
         description="The URI of the worker image."

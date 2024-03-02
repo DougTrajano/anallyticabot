@@ -1,6 +1,8 @@
+"""A module for setting up the plotly theme."""
 import plotly.io as pio
 
 def setup_plotly_theme():
+    """Set up the plotly theme."""
     # create our dark theme from the plotly_dark template
     pio.templates["dark"] = pio.templates["plotly_dark"]
 

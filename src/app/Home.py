@@ -1,13 +1,19 @@
+"""Home page"""
 import streamlit as st
-from utils.init import streamlit_init
+from utils.streamlit import app_init
+from utils.settings import settings
 
-streamlit_init()
 
-def main(title: str = "Anallyticabot"):
+app_init()
+
+def main(title: str = settings.STREAMLIT_TITLE):
+    """Main function for the home page
+
+    Args:
+    - title (str): The title of the page. Defaults to STREAMLIT_TITLE from settings.
+    """
     st.title(title)
-    st.subheader(f"Welcome {st.session_state.kc.user_info['preferred_username']}!")
-    st.write(f"Here is your user information:")
-    st.write(st.session_state.kc)
 
-if st.session_state.kc.authenticated:
+
+if __name__ == "__main__":
     main()

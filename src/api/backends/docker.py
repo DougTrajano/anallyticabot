@@ -1,7 +1,6 @@
 """Docker backend for running tasks."""
-import os
 import docker
-from api.utils.logger import logger
+from common.logger import logger
 from api.backends.base import BackendBase
 from api.backends.factory import BackendFactory
 from api.backends.settings import BackendSettings
@@ -35,8 +34,9 @@ class DockerBackend(BackendBase):
             command=command,
             detach=True,
             environment=task.environment,
-            mem_limit=task.memory*1024*1024,
-            # auto_remove=True,
+            mem_limit=task.memory_in_mb * 1024 * 1024,
+            network='anallyticabot_default',
+            auto_remove=DockerSettings.DEBUG
         )
 
         logger.info(

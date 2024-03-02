@@ -1,3 +1,4 @@
+"""The factory module for creating tasks."""
 from worker.tasks.base import TaskBase
 
 
@@ -19,7 +20,7 @@ class TaskFactory:
             cls.registry[name] = task_cls
             return task_cls
         return decorator
-    
+
     @classmethod
     def create_executor(cls, task_id: str, task_name: str) -> TaskBase:
         """Creates a task executor.
@@ -30,8 +31,8 @@ class TaskFactory:
 
         Returns:
         - Task: A task executor.
-        """        
+        """
         task_cls = cls.registry.get(task_name)
         if task_cls is None:
-            raise Exception(f"Task {task_name} not found. Registry: {cls.registry}")
+            raise ValueError(f"Task {task_name} not found. Registry: {cls.registry}")
         return task_cls(task_id=task_id)

@@ -1,39 +1,117 @@
-import time
-import numpy as np
+"""Watson Coverage Page"""
+import asyncio
+import requests
+import pandas as pd
 import streamlit as st
-from utils.init import streamlit_init
+from utils.streamlit import app_init
+from utils.settings import args
 
-streamlit_init()
+app_init()
 
-def page(title: str = "Watson Predictions"):
-    st.title(title)
-    st.sidebar.header(title)
+st.title("Watson Coverage")
+st.write(
+    """
+    In this page, we can check the coverage of examples in the Watson Assistant.
 
-    st.write(
-        """This demo illustrates a combination of plotting and animation with
-    Streamlit. We're generating a bunch of random numbers in a loop for around
-    5 seconds. Enjoy!"""
+    The coverage is calculated as the number of examples that are covered 
+    by the Watson Assistant with a confidence above a given threshold.
+    
+    It is useful to check if a new intent could cause a conflict with the existing ones.
+    """
+)
+
+if "task_id" in st.session_state:
+    st.write(f"Task ID: {st.session_state.task_id}")
+
+st.header("Upload Data")
+st.write("Upload a CSV/JSON file with the examples to check the coverage.")
+file = st.file_uploader("Upload file", type=["csv", "json"])
+
+with st.expander("Advanced Options"):
+    st.write("Select the parameters for the Watson Assistant.")
+    watson_apikey = st.text_input(
+        "Watson API Key",
+        type="password",
+        help="The API Key for the Watson Assistant."
     )
 
-    progress_bar = st.sidebar.progress(0)
-    status_text = st.sidebar.empty()
-    last_rows = np.random.randn(1, 1)
-    chart = st.line_chart(last_rows)
+    watson_url = st.text_input(
+        "Watson URL",
+        value='https://api.us-south.assistant.watson.cloud.ibm.com',
+        help="The URL for the Watson Assistant."
+    )
 
-    for i in range(1, 101):
-        new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-        status_text.text("%i%% Complete" % i)
-        chart.add_rows(new_rows)
-        progress_bar.progress(i)
-        last_rows = new_rows
-        time.sleep(0.05)
+    watson_version = st.text_input(
+        "Watson Version",
+        value='2023-06-15',
+        help="The version for the Watson Assistant."
+    )
 
-    progress_bar.empty()
+    watson_assistant_id = st.text_input(
+        "Watson Assistant ID",
+        help="The ID for the Watson Assistant."
+    )
 
-    # Streamlit widgets automatically run the script from top to bottom. Since
-    # this button is not connected to any other logic, it just causes a plain
-    # rerun.
-    st.button("Re-run")
-    
-if st.session_state.kc.authenticated:
-    page()
+    watson_user_id = st.text_input(
+        "Watson User ID",
+        value="anallyticabot",
+        help="The User ID for the Watson Assistant."
+    )
+
+    watson_alternate_intents = st.checkbox(
+        "Watson Alternate Intents",
+        value=False,
+        help="Whether to return more than one intent."
+    )
+
+    threshold = st.slider(
+        "Threshold",
+        min_value=0.0,
+        max_value=1.0,
+        value=0.5,
+        step=0.01,
+        help="The threshold for the Watson Assistant confidence."
+    )
+
+if file is not None:
+    if file.name.endswith(".csv"):
+        data = pd.read_csv(file)
+    elif file.name.endswith(".json"):
+        data = pd.read_json(file)
+
+    # st. columns
+    c1, _ = st.columns(2)
+
+    example_column = c1.selectbox("Select the column with the examples.", data.columns)
+    if st.button("Create task"):
+        response = requests.post(
+            url=f"{args.API_INTERNAL_URL}/tasks",
+            timeout=60,
+            json={
+                "name": "watson_coverage",
+                "created_by": "anallyticabot",
+                "inputs": {
+                    "data": data.to_dict(orient="records")
+                },
+                "params": {
+                    "threshold": threshold,
+                    "watson_apikey": watson_apikey,
+                    "watson_url": watson_url,
+                    "watson_version": watson_version,
+                    "watson_assistant_id": watson_assistant_id,
+                    "watson_user_id": watson_user_id,
+                    "watson_alternate_intents": watson_alternate_intents,
+                    "watson_example_column": example_column
+                }
+            }
+        )
+
+        if response.status_code in [200, 201]:
+            res = response.json()
+            st.session_state.task_id = res["task_id"]
+            st.toast(res.get("message", "Task created successfully."), icon="✅")
+            st.write("You can check the status of the task in the [Tasks](/Tasks) page.")
+            asyncio.sleep(5)
+            st.rerun()
+        else:
+            st.toast(f"Error creating task: {response.text}", icon="❌")
