@@ -269,8 +269,7 @@ async def read_task_output(
             file_name = f"{file_name}.json"
         return Response(
             content=json.dumps(result.outputs, indent=4).encode(),
-            headers={"Content-Disposition": f"attachment; filename={file_name}"},
-            # media_type="application/json"
+            headers={"Content-Disposition": f"attachment; filename={file_name}"}
         )
 
 
