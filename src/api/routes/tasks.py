@@ -229,12 +229,14 @@ async def read_task_inputs(
 async def read_task_output(
     task_id: str,
     return_as_file: bool = False,
+    file_name: str = None,
     session: AsyncSession = Depends(get_async_session)):
     """Get task outputs by task id.
 
     Args:
         task_id (str): Task id.
         return_as_file (bool, optional): Return as file. Defaults to False.
+        file_name (str, optional): File name, only if return_as_file is True. Defaults to None.
 
     Returns:
         TaskOutput: Task output.
@@ -263,9 +265,11 @@ async def read_task_output(
     if not return_as_file:
         return {"outputs": result.outputs}
     else:
+        if not file_name.endswith(".json"):
+            file_name = f"{file_name}.json"
         return Response(
             content=json.dumps(result.outputs, indent=4).encode(),
-            headers={"Content-Disposition": "attachment; filename=output.json"},
+            headers={"Content-Disposition": f"attachment; filename={file_name}"},
             # media_type="application/json"
         )
 
