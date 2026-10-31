@@ -23,7 +23,7 @@ def not_connected_page(state):
     st.stop()
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def try_read_df(f, cols_names, file_type="csv"):
     try:
         if file_type == "csv":
