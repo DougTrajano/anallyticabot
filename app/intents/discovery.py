@@ -6,7 +6,7 @@ from src.helper_functions import setup_logger
 logger = setup_logger()
 
 
-@st.cache
+@st.cache_data
 def prepare_logs(logs):
 
     logger.info({"message": "Prearing logs."})

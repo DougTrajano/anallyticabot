@@ -17,7 +17,7 @@ def eval_intent_col(df):
     return df
 
 
-@st.cache
+@st.cache_data
 def cache_df(df):
     return df
 

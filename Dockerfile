@@ -1,5 +1,5 @@
 # base image
-FROM python:3.8
+FROM python:3.10
 
 # making directory of app
 RUN mkdir /app

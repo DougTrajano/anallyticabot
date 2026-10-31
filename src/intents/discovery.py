@@ -20,6 +20,7 @@ class IntentsDiscovery:
                  spacy_model: str = "en_core_web_sm"):
 
         nltk.download('punkt')
+        nltk.download('punkt_tab')  # required by nltk>=3.9
 
         self.n_clusters = n_clusters
         self.data = data

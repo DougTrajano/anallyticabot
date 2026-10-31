@@ -16,7 +16,7 @@ def intents_metrics_page(state):
     start_date = end_date - datetime.timedelta(days=7)
 
     st.subheader("Parameters")
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
     args['logs_date'] = col1.date_input('Logs date', value=(start_date, end_date))
     args['Date'] = col2.selectbox('Datetime variable', ('request_timestamp', 'response_timestamp'))
 
